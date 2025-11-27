@@ -1,7 +1,7 @@
-# PipeSight 🏠🔧  
+# TunnelVision 🏠🔧  
 **AI-Powered Predictive Maintenance for Homes & Facilities**
 
-PipeSight is an AI-powered predictive maintenance tool designed to help homeowners and facility managers stay ahead of costly infrastructure failures. By analyzing historical data from pipes, pumps, and other home systems, PipeSight predicts when maintenance is likely needed — before leaks, bursts, or malfunctions occur.
+TunnelVision is an AI-powered predictive maintenance tool designed to help homeowners and facility managers stay ahead of costly infrastructure failures. By analyzing historical data from pipes, pumps, and other home systems, TunnelVision predicts when maintenance is likely needed — before leaks, bursts, or malfunctions occur.
 
 ---
 
@@ -17,7 +17,7 @@ PipeSight is an AI-powered predictive maintenance tool designed to help homeowne
 
 ## 🧠 How It Works (Simplified)
 
-PipeSight uses a machine learning model trained on historical maintenance and failure data. The system:
+TunnelVision uses a machine learning model trained on historical maintenance and failure data. The system:
 
 1. **Collects data** (synthetic or real) including system age, environment, usage, and previous failures.  
 2. **Processes the dataset** through a feature engineering pipeline.  
