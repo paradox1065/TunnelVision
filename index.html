@@ -14,7 +14,20 @@
     <ul>
         <li>When specific parts of a house or infrastructure are likely to fail, the AI model can alert homeowners or maintenance teams in advance.</li>
         <li>By analyzing historical data on repairs and failures, the AI can identify patterns and predict future issues.</li>
-        <li>This proactive approach helps in scheduling maintenance during convenient times, minimizing disruption and costs.</
+        <li>This proactive approach helps in scheduling maintenance during convenient times, minimizing disruption and costs.</li>
     </ul>
+    <h3>Try It Yourself</h3>
+    <form>
+      <label for="name">Enter your name:</label><br>
+      <input type="text" id="name" name="name" placeholder="Your name here"><br><br>
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+      document.querySelector("form").addEventListener("submit", function (event) {
+        event.preventDefault(); // stops the page from refreshing
+        const name = document.getElementById("name").value;
+        alert("Hello, " + name + "!");
+      });
+    </script>
   </body>
 </html>
