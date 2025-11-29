@@ -1,1 +1,11 @@
-
+home_id,room,component,age_years,last_service_date,issue_reported,temperature_c,pressure_psi,cost_estimate
+H001,Kitchen,Pipe,12,2023-05-14,Leak,18.5,55,120
+H002,Bathroom,Pipe,8,2022/11/02,,21.0,61,80
+H003,Basement,Pump,15,2021-08-30,Overheating,NaN,70,350
+H004,Kitchen,Pipe,NaN,2020-07-12,Burst,16.2,,500
+H005,Living Room,Outlet,5,2023-01-18,Flickering,19.8,NA,45
+H006,Garage,Pump,11,not_available,Noise,17.4,68,275
+H007,Bathroom,Pipe,4,2022-03-09,Leak,20.1,60,95
+H008,Kitchen,Outlet,6,2023-09-02,,19.3,NA,40
+H009,Basement,Pipe,20,2021-12-11,Burst,17.0,52,600
+H010,Garage,Pipe,14,2022-10-07,Leak,,57,130
