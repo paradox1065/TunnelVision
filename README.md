@@ -23,7 +23,8 @@ TunnelVision uses a machine learning model trained on municipal maintenance and 
 2. **Processes the dataset** through a feature engineering pipeline.  
 3. **Trains an ML model** (e.g., Random Forest, Gradient Boosting, or LSTM for time-series data).  
 4. **Generates predictions** for future failures with a confidence score.  
-5. **Outputs alerts & recommendations** through a dashboard or command-line interface for public works teams.
+5. **Outputs alerts & recommendations** through a dashboard or command-line interface for public works teams.  
+This project is structured so beginners — even those building their first ML model — can follow along.
 
 ---
 
