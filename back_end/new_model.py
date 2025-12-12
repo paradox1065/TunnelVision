@@ -70,3 +70,5 @@ print("R²:", r2)
 
 cv_scores = cross_val_score(rf, X_final, y, cv=5, scoring="r2")
 print("CV R²:", cv_scores.mean())
+
+joblib.dump(model, "model.pkl")
