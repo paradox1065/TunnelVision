@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from scipy.sparse import hstack
+import joblib
 
 # --- Load ---
 df = pd.read_csv("synthetic_city_maintenance.csv")
@@ -71,4 +72,4 @@ print("R²:", r2)
 cv_scores = cross_val_score(rf, X_final, y, cv=5, scoring="r2")
 print("CV R²:", cv_scores.mean())
 
-joblib.dump(model, "model.pkl")
+joblib.dump(rf, "model.pkl")
