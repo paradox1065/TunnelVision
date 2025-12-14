@@ -49,7 +49,7 @@ def predict(data: PredictionRequest):
     data.date_of_last_repair,
     data.date_issue_was_observed,
     data.install_year,
-    data.issue_description
+    data.issue_description,
     ]
 
     # --- call the predict_all function from model_utils.py ---
