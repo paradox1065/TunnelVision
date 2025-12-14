@@ -25,6 +25,7 @@ class PredictionRequest(BaseModel):
     install_year: int # or string?
     issue_description: str
 
+# --- Define the structure of the prediction response ---
 class PredictionResponse(BaseModel):
     failure_in_30_days: bool
     failure_type: str
