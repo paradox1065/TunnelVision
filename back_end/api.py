@@ -1,18 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from model_utils import predict_features
+from model_utils import predict_all
 
 app = FastAPI()
 
-# allows front-end to access the back-end
+# --- allows front-end to access the back-end ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Define what input data is needed for prediction in the format variable_name: data_type
+# --- Define what input data is needed for prediction in the format variable_name: data_type ---
 class PredictionRequest(BaseModel):
     type: str
     material: str
@@ -25,8 +25,17 @@ class PredictionRequest(BaseModel):
     install_year: int # or string?
     issue_description: str
 
-@app.post("/predict")
-# extract features from data in the format data.variable_name (variable name refers to the ones defined in PredictionRequest)
+class PredictionResponse(BaseModel):
+    failure_in_30_days: bool
+    failure_type: str
+    risk_score: int
+    recommended_action: str
+    priority: int
+    emergency_required: bool
+
+@app.post("/predict", response_model=PredictionResponse)
+
+# --- extract features from data in the format data.variable_name ---
 def predict(data: PredictionRequest):
     lat, lon = data.exact_location # extract latitude and longitude from the tuple
     features = [
@@ -42,5 +51,7 @@ def predict(data: PredictionRequest):
     data.install_year,
     data.issue_description
     ]
-    prediction = predict_features(features) # use the trained model to predict the output based on the features extracted from input_data
-    return {"prediction": prediction}
+
+    # --- call the predict_all function from model_utils.py ---
+    prediction = predict_all(features)
+    return prediction

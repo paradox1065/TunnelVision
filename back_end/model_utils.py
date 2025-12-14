@@ -6,3 +6,13 @@ risk_model = joblib.load("models/risk_score.pkl")
 action_model = joblib.load("models/recommended_action.pkl")
 priority_model = joblib.load("models/priority.pkl")
 emergency_model = joblib.load("models/emergency.pkl")
+
+def predict_all(features: list):
+    return {
+        "failure_in_30_days": bool(failure_model.predict([features])[0]),
+        "failure_type": failure_type_model.predict([features])[0],
+        "risk_score": int(risk_model.predict([features])[0]),
+        "recommended_action": action_model.predict([features])[0],
+        "priority": int(priority_model.predict([features])[0]),
+        "emergency_required": bool(emergency_model.predict([features])[0]),
+    }
