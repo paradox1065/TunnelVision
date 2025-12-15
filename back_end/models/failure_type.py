@@ -1,0 +1,1 @@
+# model that determines the type of failure based on equipment features

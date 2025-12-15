@@ -1,0 +1,1 @@
+# model that determines if there will be a failure in the next 30 days based on equipment features
