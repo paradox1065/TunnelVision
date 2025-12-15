@@ -5,7 +5,7 @@ from model_utils import predict_all
 
 app = FastAPI()
 
-# --- allows front-end to access the back-end ---
+# --- Allows front-end to access the back-end ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -36,7 +36,7 @@ class PredictionResponse(BaseModel):
 
 @app.post("/predict", response_model=PredictionResponse)
 
-# --- extract features from data in the format data.variable_name ---
+# --- Extract features from data in the format data.variable_name ---
 def predict(data: PredictionRequest):
     lat, lon = data.exact_location # extract latitude and longitude from the tuple
     features = [
@@ -53,6 +53,6 @@ def predict(data: PredictionRequest):
     data.issue_description,
     ]
 
-    # --- call the predict_all function from model_utils.py ---
+    # --- Call the predict_all function from model_utils.py ---
     prediction = predict_all(features)
     return prediction
