@@ -1,1 +1,0 @@
-# model that determines whether emergency intervention is required based on equipment features
