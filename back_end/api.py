@@ -23,7 +23,7 @@ class PredictionRequest(BaseModel):
     soil_type: str # required
     exact_location: Optional[tuple[float, float]] = None # optional, strongly recommended
     date_of_last_repair: str # required
-    date_issue_was_observed: str # required
+    date_asset_was_observed: str # required
     install_year: int # or string?
     length_m: Optional[float] = None # optional, strongly recommended
     issue_description: str # required
@@ -41,7 +41,6 @@ class PredictionResponse(BaseModel):
     risk_score: int
     recommended_action: str
     priority: int
-    emergency_required: bool
 
 @app.post("/predict", response_model=PredictionResponse)
 
@@ -66,7 +65,7 @@ def predict(data: PredictionRequest):
     lon=lon,
     temperature_c=temperature_c,
     date_of_last_repair=data.date_of_last_repair,
-    date_issue_was_observed=data.date_issue_was_observed,
+    date_asset_was_observed=data.date_asset_was_observed,
     install_year=data.install_year,
     issue_description=data.issue_description,
 )

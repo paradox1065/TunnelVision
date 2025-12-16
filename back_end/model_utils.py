@@ -15,7 +15,6 @@ def predict_all(features: list):
         "risk_score": int(risk_model.predict([features])[0]),
         "recommended_action": action_model.predict([features])[0],
         "priority": int(priority_model.predict([features])[0]),
-        "emergency_required": bool(emergency_model.predict([features])[0]),
     }
 
 REGION_COORDINATES = {
