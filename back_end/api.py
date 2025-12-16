@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pydantic import model_validator
 from typing import Optional
-from model_utils import predict_all
+from model_utils import predict_all, get_location_from_region, get_temperature
 
 app = FastAPI()
 
@@ -21,7 +21,6 @@ class PredictionRequest(BaseModel):
     region: Optional[str] = None # optional (required if there is no exact_location)
     soil_type: str # required
     exact_location: Optional[tuple[float, float]] = None # optional, strongly recommended
-    temperature_c: float # required
     date_of_last_repair: str # required
     date_issue_was_observed: str # required
     install_year: int # or string?
@@ -47,10 +46,16 @@ class PredictionResponse(BaseModel):
 
 # --- Extract features from data in the format data.variable_name ---
 def predict(data: PredictionRequest):
+    # --- Location resolution ---
     if data.exact_location is not None:
-        lat, lon = data.exact_location # extract latitude and longitude from the tuple
+        lat, lon = data.exact_location
     else:
-        lat, lon = None, None
+        lat, lon = get_location_from_region(data.region)
+
+    # --- Temperature inference ---
+    temperature_c = get_temperature(lat, lon)
+
+    # --- Feature list construction ---
     features = [
     data.type,
     data.material,
@@ -58,7 +63,7 @@ def predict(data: PredictionRequest):
     data.soil_type,
     lat,
     lon,
-    data.temperature_c,
+    temperature_c,
     data.date_of_last_repair,
     data.date_issue_was_observed,
     data.install_year,

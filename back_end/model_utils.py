@@ -16,3 +16,11 @@ def predict_all(features: list):
         "priority": int(priority_model.predict([features])[0]),
         "emergency_required": bool(emergency_model.predict([features])[0]),
     }
+
+def get_location_from_region(region: str) -> tuple[float, float]:
+    # Aarushi's logic for getting lat, lon from region
+    return lat, lon
+
+def get_temperature(lat: float, lon: float) -> float:
+    # Call weather API here
+    return temperature_c
