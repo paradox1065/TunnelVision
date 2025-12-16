@@ -47,7 +47,7 @@ class PredictionResponse(BaseModel):
 
 # --- Extract features from data in the format data.variable_name ---
 def predict(data: PredictionRequest):
-    if exact_location is not None:
+    if data.exact_location is not None:
         lat, lon = data.exact_location # extract latitude and longitude from the tuple
     else:
         lat, lon = None, None
@@ -62,6 +62,7 @@ def predict(data: PredictionRequest):
     data.date_of_last_repair,
     data.date_issue_was_observed,
     data.install_year,
+    data.length_m,
     data.issue_description,
     ]
 
