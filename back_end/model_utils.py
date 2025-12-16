@@ -55,7 +55,7 @@ def get_temperature(lat: float, lon: float) -> float:
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
-        return data["current"]["temperature_2m"]
+        return data.get("current", {}).get("temperature_2m", 15.0)
     
     except Exception:
         return 15.0 # Default temperature if API call fails
