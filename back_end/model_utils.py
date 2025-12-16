@@ -23,14 +23,17 @@ def get_location_from_region(region: str) -> tuple[float, float]:
     return lat, lon
 
 def get_temperature(lat: float, lon: float) -> float:
-    url = (
+    try:
+        url = (
         "https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lon}"
         "&current=temperature_2m"
     )
 
-    response = requests.get(url)
-    response.raise_for_status()
+        response = requests.get(url)
+        response.raise_for_status()
 
-    data = response.json()
-    return data["current"]["temperature_2m"]
+        data = response.json()
+        return data["current"]["temperature_2m"]
+    except Exception:
+        return 15.0 # Default temperature if API call fails
