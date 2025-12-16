@@ -1,4 +1,5 @@
 import joblib
+import requests
 
 failure_model = joblib.load("models/failure_30d.pkl")
 failure_type_model = joblib.load("models/failure_type.pkl")
@@ -22,5 +23,14 @@ def get_location_from_region(region: str) -> tuple[float, float]:
     return lat, lon
 
 def get_temperature(lat: float, lon: float) -> float:
-    # Call weather API here
-    return temperature_c
+    url = (
+        "https://api.open-meteo.com/v1/forecast"
+        f"?latitude={lat}&longitude={lon}"
+        "&current=temperature_2m"
+    )
+
+    response = requests.get(url)
+    response.raise_for_status()
+
+    data = response.json()
+    return data["current"]["temperature_2m"]
