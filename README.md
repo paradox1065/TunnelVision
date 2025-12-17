@@ -1,100 +1,104 @@
 # TunnelVision 🏙️  
-### **AI for Predictive Maintenance in Cupertino, CA**
+### **AI for Predictive Infrastructure Maintenance in the Bay Area**
 
-TunnelVision predicts infrastructure failures *before* they happen.  
-Using machine learning and realistic synthetic data, it forecasts when roads, pipelines, pumps, and storm drains will need maintenance — helping cities prevent outages, reduce costs, and improve public safety.
+TunnelVision is an AI-powered predictive maintenance system designed to help cities across the **San Francisco Bay Area** detect infrastructure risks *before* failures occur.
+
+Using machine learning and realistic synthetic data, TunnelVision forecasts short-term failures and maintenance needs for assets like pipelines, roads, and drainage systems—supporting **construction workers, maintenance crews, and city officials** in making faster, safer, and more cost-effective decisions.
 
 ---
 
 ## 🚀 What It Does
-- Predicts **Remaining Useful Life (RUL)** of each asset  
-- Sends **early failure alerts** (next 30 days)  
-- Generates a **0–100 risk score**  
-- Recommends **maintenance actions & priorities**  
-- Visualizes asset health across the city  
+- Predicts **asset failure risk within the next 30 days**
+- Classifies **likely failure types**
+- Generates a **0–100 risk score**
+- Recommends **maintenance actions and priorities**
+- Helps teams decide **what to fix first and why**
 
 ---
 
 ## 🧠 How It Works
 
-### **1️⃣ Realistic Synthetic City Data**
-We built a dataset modeled after Cupertino infrastructure using 20+ engineered features:
-- Asset age, material, soil type  
-- Rainfall, temperature, traffic  
-- Previous failures & repair history  
-- Seasonal patterns (ex: storms → storm drain failures)  
+### **1️⃣ Realistic Synthetic Infrastructure Data**
+TunnelVision uses high-quality synthetic data generated with **mostly.ai**, modeled after real Bay Area infrastructure patterns.
 
-> This allows the model to learn real degradation behavior without needing months of city data collection.
+Each asset snapshot includes features such as:
+- Asset type, material, installation year, and length  
+- Geographic data (latitude, longitude, region)  
+- Environmental conditions (rainfall, temperature, soil moisture)  
+- Terrain and surrounding context (soil type, slope, tree density, traffic)  
+- Maintenance history (previous failures, last repair date)
+
+This approach preserves privacy while still capturing realistic degradation and failure behavior.
 
 ---
 
 ### **2️⃣ Machine Learning Models**
-TunnelVision predicts:
-- **RUL (regression)**  
-- **Failure probability (classification)**  
+TunnelVision uses **Random Forest models** to learn complex, non-linear relationships between environmental stressors, asset history, and failure risk.
 
-Models used:
-- Random Forest  
-- Gradient Boosting  
-- XGBoost  
+The models predict:
+- **Failure likelihood in the next 30 days**
+- **Most likely failure type**
+- **Maintenance recommendations and priority level**
 
 ---
 
 ### **3️⃣ Risk Score (0–100)**
-Weighted by:
+Each asset is assigned a risk score based on:
 | Factor | Weight |
-|--------|--------|
+|------|------|
 | Remaining Useful Life | 40% |
 | Failure Probability | 30% |
 | Asset Criticality | 20% |
 | Model Uncertainty | 10% |
 
+This score allows teams to quickly compare assets and focus on the highest-risk areas.
+
 ---
 
-### **4️⃣ Recommendations**
-The system outputs:
-- Maintenance priority  
-- Estimated cost  
-- Predicted failure type  
-- Urgency level  
+### **4️⃣ System Outputs**
+For every asset snapshot, TunnelVision outputs:
+- `failure_next_30d`
+- `failure_type_predicted`
+- `risk_score`
+- `recommended_action`
+- `recommended_priority`
+
+These outputs are designed to be **directly actionable** for real-world maintenance planning.
 
 ---
 
 ## 🌟 Why It Matters
-Cities usually fix infrastructure *after* it breaks.  
-TunnelVision flips the model: fix things **before** they fail.
+Most infrastructure systems rely on **reactive maintenance**—fixing problems only after failure.
 
-This reduces:
+TunnelVision enables a **proactive approach**, helping reduce:
 - Emergency repair costs  
-- Service outages  
-- Public safety risks  
-- Long-term degradation  
+- Service disruptions  
+- Safety hazards  
+- Long-term infrastructure degradation  
 
 ---
 
 ## 🛠️ Tech Stack
-- **Python**  
-- **Pandas, NumPy**  
-- **Scikit-learn / XGBoost**  
-- **Synthetic Data Engine**  
-- *(Optional)* Streamlit dashboard  
-
----
-
-## 🧪 Current Status
-Actively building:
-- Synthetic dataset  
-- RUL prediction model  
-- Failure prediction model  
-- Risk scoring engine  
-- Asset health dashboard  
+- **Python**
+- **Pandas, NumPy**
+- **Scikit-learn (Random Forest)**
+- **mostly.ai (synthetic data generation)**
 
 ---
 
 ## 🎯 What’s Next
-- Add more asset types (bridges, streetlights)  
-- Deploy full dashboard UI  
-- Integrate SHAP explainability  
+- **Interactive Streamlit Dashboard**  
+  Build a lightweight web interface that allows users to:
+  - View assets ranked by risk
+  - Filter by region, asset type, or priority
+  - Inspect individual asset predictions and recommended actions
+  - Visualize infrastructure risk across the Bay Area  
+
+- **Expand Asset Coverage**  
+  Add additional infrastructure types such as bridges and streetlights.
+
+- **Model Explainability (SHAP)**  
+  Integrate SHAP to show which features (e.g., rainfall, asset age, traffic) most influenced each prediction—improving transparency and trust for city officials and engineers.
 
 ---
 
