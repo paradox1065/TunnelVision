@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pydantic import model_validator
 from typing import Optional
+from datetime import date
 from features_schema import build_feature_vector
 from model_utils import predict_all, get_location_from_region, get_temperature
 
@@ -22,9 +23,9 @@ class PredictionRequest(BaseModel):
     region: Optional[str] = None # optional (required if there is no exact_location)
     soil_type: str # required
     exact_location: Optional[tuple[float, float]] = None # optional, strongly recommended
-    date_of_last_repair: str # required
-    snapshot_date: str # required
-    install_year: int # or string?
+    date_of_last_repair: str # required, format "MM-DD-YYYY"
+    snapshot_date: Optional[str] = date.today # default is today
+    install_year: str # required
     length_m: Optional[float] = None # optional, strongly recommended
     issue_description: str # required
 
