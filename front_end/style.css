@@ -1,37 +1,195 @@
-h1 {
-  color: #ff0000ff;
+.tabs {
+  display: flex;
+  background-color: #64748B; 
+  padding: 10px;
 }
 
-p {
-  color: #333333;  /* dark gray */
-  font-size: 18px;
+.tabs a {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #FFFFFF;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  margin-right: 8px;
+  background-color: #2563EB; 
+  transition: 0.2s;
 }
 
-form {
-  margin-top: 20px;
+.tabs a:hover {
+  background-color: #14B8A6; 
+}
+
+.active-tab {
+  background-color: #FFFFFF;
+  color: #2563EB; 
+  border: 2px solid #2563EB;
+  border-bottom: 0;
+}
+
+
+.hero {
+  padding: 60px 20px;
+  text-align: center;
+  background: #ffffff;
+}
+
+.hero h1 {
+  font-size: 4.5rem;
+  margin-bottom: 10px;
+  color: #000000;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: auto;
+  color: #000000;
+}
+
+
+.asset-form {
+  max-width: 500px;
+  margin: auto;
+  background: #FFFFFF; 
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.asset-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #111827; 
 }
 
 label {
+  display: block;
+  margin-top: 15px;
   font-weight: bold;
+  color: #111827;
 }
 
-input[type="text"] {
+input,
+select {
+  width: 100%;
   padding: 8px;
-  width: 250px;
-  border: 1px solid #888;
-  border-radius: 4px;
-}
-
-button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #64748B; 
   font-size: 14px;
 }
 
+input[readonly] {
+  background-color: #f0f2f5;
+}
+
+small {
+  color: #64748B;
+  font-size: 12px;
+}
+
+button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 10px;
+  background-color: #2563EB; 
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 button:hover {
-  background-color: #0056b3;
+  background-color: #14B8A6; 
+
+
+body {
+  background-color: #FFFFFF; 
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 18px;
+  color: #111827;
+}
+
+.content {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #FFFFFF; 
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+.content h1 {
+  text-align: center;
+  font-size: 3.2rem;
+  letter-spacing: -0.02em;
+  color: #111827; 
+
+.content h2 {
+  margin-top: 40px;
+  color: #111827;
+  border-bottom: 2px solid #64748B; 
+  padding-bottom: 6px;
+}
+
+.content h3 {
+  margin-top: 30px;
+  color: #111827; 
+}
+
+.content h4 {
+  margin-top: 15px;
+  color: #111827; 
+}
+
+
+.content p,
+.content li {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #111827; 
+  margin-top: 10px;
+}
+
+.content ul {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.content li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+
+.content table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.content th,
+.content td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #64748B;
+}
+
+.content th {
+  background-color: #f0f2f5;
+  font-weight: bold;
+}
+
+/*For smaller screens*/
+@media (max-width: 768px) {
+  .content {
+    padding: 25px;
+  }
+
+  .content h1 {
+    font-size: 2.2rem;
+  }
 }
