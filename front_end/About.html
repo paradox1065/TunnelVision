@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About</title>
+</head>
+<body>
+    <script src="get_user_location.js"></script>
+
+   <div class="tabs">
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active-tab">About</a>
+    <a href="Instructions.html">Form</a>
+  </div>
+
+  <div class="content">
+  <h1>TunnelVision</h1>
+  <h2>AI for Predictive Maintenance</h2>
+  <p>AI is used to predict when infrastructure, like water pipes, will need maintenance before they occur.</p>
+    <h2>Key Features</h2>
+    <ul>
+        <li>When specific parts of a house or infrastructure are likely to fail, the AI model can alert homeowners or maintenance teams in advance.</li>
+        <li>By analyzing historical data on repairs and failures, the AI can identify patterns and predict future issues.</li>
+        <li>This proactive approach helps in scheduling maintenance during convenient times, minimizing disruption and costs.</li>
+    </ul>
+   <h2>What It Does</h2>
+    <ul>
+        <li>Predicts Remaining Useful Life (RUL) of each asset</li>
+        <li>Sends early failure alerts (next 30 days)</li>
+        <li>Generates a 0–100 risk score</li>
+        <li>Recommends maintenance actions & priorities</li>
+        <li>Visualizes asset health across the city</li>
+    </ul>
+   <h2>How it Works</h2>
+   <h3><li>1️⃣ Realistic Synthetic City Data</li></h3>
+    <ul>
+        <li>We built a dataset modeled after Cupertino infrastructure using 20+ engineered features:</li>
+        <li>Asset age, material, soil type</li>
+        <li>Rainfall, temperature, traffic</li>
+        <li>Previous failures & repair history</li>
+        <li>Seasonal patterns (ex: storms → storm drain failures)</li>
+    </ul>
+    <h3><li>2️⃣ Machine Learning Models</li></h3>
+    <h4>TunnelVision predicts:</h4>
+    <ul>
+        <li>RUL (regression)</li>
+        <li>Failure probability (classification)</li>
+    </ul>
+    <h4>Models used:</h4>
+    <ul>
+        <li>Random Forest</li>
+        <li>XGBoost</li>
+        <li>Gradient Boosting</li>
+    </ul>
+    <h3>3️⃣ Risk Score (0–100)</h3>
+    <h4>Weighted by:</h4>
+    <table border = "1">
+        <tr>
+            <th>Factor</th>
+            <th>Weight</th>
+        </tr>
+        <tr>
+            <td>RUL</td>
+            <td>40%</td>
+        </tr>
+        <tr>
+            <td>Failure Probability</td>
+            <td>60%</td>
+        </tr>
+        <tr>
+            <td>Asset Criticality</td>  
+            <td>20%</td>
+        </tr>
+        <tr>
+            <td>Model Uncertainty</td>
+            <td>10%</td>
+        </tr>
+    </table>  
+    <h3>4️⃣ Recommendations</h3>
+    <h4>The system outputs:</h4>
+    <ul>
+        <li>Maintenance priority</li>
+        <li>Predicted failure type</li>
+        <li>Urgency level</li>
+    </ul> 
+
+</html>
