@@ -1,11 +1,11 @@
 import joblib
 import requests
 
-failure_model = joblib.load("models/failure_30d.pkl")
-failure_type_model = joblib.load("models/failure_type.pkl")
-risk_model = joblib.load("models/risk_score.pkl")
-action_model = joblib.load("models/recommended_action.pkl")
-priority_model = joblib.load("models/priority.pkl")
+failure_model = joblib.load("models/failure_30d_features.pkl")
+failure_type_model = joblib.load("models/failure_type_features.pkl")
+risk_model = joblib.load("models/risk_score_features.pkl")
+action_model = joblib.load("models/recommended_action_features.pkl")
+priority_model = joblib.load("models/priority_features.pkl")
 
 def predict_all(features: list):
     return {
