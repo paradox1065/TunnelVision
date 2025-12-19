@@ -1,3 +1,11 @@
+:root {
+  --bg-main: #ffffff;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --accent: #2563EB;
+  --accent-hover: #14B8A6;
+}
+
 .tabs {
   display: flex;
   background-color: #64748B; 
@@ -50,7 +58,7 @@
 .asset-form {
   max-width: 500px;
   margin: auto;
-  background: #FFFFFF; 
+  background: var(--bg-card); 
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
@@ -59,7 +67,7 @@
 .asset-form h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #111827; /* text */
+  color: var(--text-main); /* text */
 }
 
 label {
@@ -92,7 +100,7 @@ button {
   width: 100%;
   margin-top: 25px;
   padding: 10px;
-  background-color: #2563EB; 
+  background-color: var(--accent) 
   color: #FFFFFF; 
   border: none;
   border-radius: 6px;
@@ -101,15 +109,20 @@ button {
 }
 
 button:hover {
-  background-color: #14B8A6;
+  background-color: var(--accent-hover);
 }
 
 
 body {
-  background-color: #FFFFFF; 
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 18px;
-  color: #111827; 
+  color: #111827;
+
+  /* TunnelVision background */
+  background:
+    radial-gradient(circle at center, rgba(37,99,235,0.15), transparent 60%),
+    linear-gradient(180deg, #0f172a, #020617);
 }
 
 .content {
@@ -195,3 +208,21 @@ body {
     font-size: 2.2rem;
   }
 }
+
+body.dark {
+  --bg-main: #020617;
+  --bg-card: #0f172a;
+  --text-main: #e5e7eb;
+  --accent: #38bdf8;
+  --accent-hover: #22d3ee;
+}
+
+.theme-toggle {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+}
+
