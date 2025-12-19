@@ -56,7 +56,7 @@ document.getElementById("assetForm").addEventListener("submit", async function (
   }
 
   try {
-    const API_BASE = window.location.hostname.includes("githubpreview")
+    const API_BASE = window.location.hostname.includes("github.dev")
       ? "https://fictional-disco-976pvp495vj72x44p-8000.app.github.dev"
       : "http://127.0.0.1:8000";
 
