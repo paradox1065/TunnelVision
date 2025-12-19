@@ -44,7 +44,9 @@ document.getElementById("assetForm").addEventListener("submit", async function (
       document.getElementById("observedDate").value
     ),
     install_year: document.getElementById("install_year").value,
-    length_m: parseFloat(document.getElementById("length_m").value)
+    length_m: document.getElementById("length_m").value
+      ? parseFloat(document.getElementById("length_m").value)
+      : null
   };
 
   // Validation: API requires region OR exact_location
@@ -54,7 +56,11 @@ document.getElementById("assetForm").addEventListener("submit", async function (
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/predict", {
+    const API_BASE = window.location.hostname.includes("githubpreview")
+      ? "https://fictional-disco-976pvp495vj72x44p-8000.app.github.dev/"
+      : "http://127.0.0.1:8000";
+
+    const response = await fetch(`${API_BASE}/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
