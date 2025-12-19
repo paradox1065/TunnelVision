@@ -14,7 +14,7 @@ import joblib
 
 # --- Paths ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
+csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_balanced.csv")
 # --- Build features ---
 X, df, feature_cols = bf(csv_path, target="recommended_action")
 

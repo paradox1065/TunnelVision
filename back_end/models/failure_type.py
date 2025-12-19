@@ -13,7 +13,7 @@ import joblib
 
 # --- Paths ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
+csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_balanced.csv")
 print("Loading CSV from:", csv_path)
 
 # --- Build features ---
