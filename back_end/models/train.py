@@ -1,75 +1,86 @@
 import pandas as pd
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.ensemble import RandomForestRegressor
-from scipy.sparse import hstack
-import joblib
 
-# --- Load ---
-df = pd.read_csv("synthetic_city_maintenance.csv")
-df.columns = df.columns.str.lower().str.strip().str.replace(" ", "_")
+def build_features(csv_path, target=None):
+    df = pd.read_csv(csv_path)
+    df.columns = df.columns.str.lower().str.strip().str.replace(" ", "_")
 
-# --- Drop irrelevant ---
-df = df.drop(columns=["cost_estimate"], errors="ignore")
+    # -------------------------
+    # Base cleaning
+    # -------------------------
+    df["snapshot_date"] = pd.to_datetime(df["snapshot_date"])
+    df["last_repair_date"] = pd.to_datetime(df["last_repair_date"], errors="coerce")
 
-# --- Fix missing text ---
-df["issue_description"] = df["issue_description"].fillna("na")
+    df["days_since_repair"] = (
+        df["snapshot_date"] - df["last_repair_date"]
+    ).dt.days.fillna(999)
 
-# --- Keyword flags FIRST ---
-keywords = ["leak", "flicker", "crack", "overflow", "burning", "broken", "jammed", "noise"]
-for kw in keywords:
-    df[f"kw_{kw}"] = df["issue_description"].str.contains(kw, case=False).astype(int)
+    df["asset_age_years"] = (
+        df["snapshot_date"].dt.year - df["install_year"]
+    ).clip(lower=0)
 
-# --- Date / cyclical encoding ---
-df["month_sin"] = np.sin(2 * np.pi * df["month"] / 12)
-df["month_cos"] = np.cos(2 * np.pi * df["month"] / 12)
+    # -------------------------
+    # SAFE engineered features
+    # -------------------------
+    df["failures_prev"] = df.groupby("asset_id")["num_prev_failures"].shift(1).fillna(0)
+    df["recent_repair"] = (df["days_since_repair"] < 180).astype(int)
+    df["old_asset"] = (df["asset_age_years"] > 40).astype(int)
 
-# --- Interaction features ---
-df["age_load"] = df["age_years"] * df["load_factor"]
-df["temp_load"] = df["temperature_c"] * df["load_factor"]
-df["pressure_load"] = df["pressure_psi"] * df["load_factor"]
-df["maintenance_ratio"] = df["days_since_maintenance"] / (df["age_years"] + 1)
+    # -------------------------
+    # Environmental stress
+    # -------------------------
+    df["rain_stress"] = df["rainfall_mm"] * df["slope_grade"]
+    df["moisture_stress"] = df["soil_moisture_pc"] * df["slope_grade"]
+    df["env_stress"] = df["rainfall_mm"] * 0.4 + df["soil_moisture_pc"] * 0.6
+    df["temp_stress"] = df["avg_temp_c"] * df["slope_grade"]
 
-# --- Convert numeric columns ---
-numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
-numeric_cols.remove("days_until_failure")  # target
+    # -------------------------
+    # Structural features
+    # -------------------------
+    df["structural_risk"] = df["asset_age_years"] * df["length_m"]
+    df["length_age"] = df["length_m"] * df["asset_age_years"]
+    df["length_slope"] = df["length_m"] * df["slope_grade"]
+    df["failure_pressure"] = df["num_prev_failures"] * np.log1p(df["days_since_repair"])
 
-# Fill NaNs
-df[numeric_cols] = df[numeric_cols].fillna(-1)
+    # -------------------------
+    # Extra interaction features for risk_score
+    # -------------------------
+    # Combine age, slope, and length — older long steep assets are riskier
+    df["age_length_slope"] = df["asset_age_years"] * df["length_m"] * df["slope_grade"]
 
-# --- TF-IDF text ---
-vectorizer = TfidfVectorizer(stop_words="english", max_features=200, ngram_range=(1, 2))
-X_text = vectorizer.fit_transform(df["issue_description"])
+    # Combine previous failures with environmental stress — assets with many failures in harsh conditions are higher risk
+    df["failures_env_stress"] = df["failures_prev"] * df["env_stress"]
 
-# --- Numeric matrix (after all engineering) ---
-X_numeric = df[numeric_cols].astype(float).values
+    # Length * rainfall stress — longer assets in heavy rain are riskier
+    df["length_rain_stress"] = df["length_m"] * df["rainfall_mm"]
 
-# --- Combine ---
-X_final = hstack([X_numeric, X_text])
+    # Soil moisture * asset age — old assets in wet soil are at risk
+    df["moisture_age"] = df["soil_moisture_pc"] * df["asset_age_years"]
 
-# --- Target ---
-df["days_until_failure"] = pd.to_numeric(df["days_until_failure"], errors="coerce").fillna(-1)
-y = df["days_until_failure"]
+    # Combined structural + environmental pressure
+    df["struct_env_pressure"] = df["structural_risk"] * df["env_stress"]
 
-# --- Split ---
-X_train, X_test, y_train, y_test = train_test_split(X_final, y, test_size=0.2, random_state=42)
+    # -------------------------
+    # Categorical encoding
+    # -------------------------
+    cat_cols = ["type", "material", "soil_type", "region", "traffic"]
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
 
-# --- Random Forest ---
-rf = RandomForestRegressor(n_estimators=300, max_depth=10, random_state=42)
-rf.fit(X_train, y_train)
+    # -------------------------
+    # Numeric features only, drop targets and asset_id
+    # -------------------------
+    targets = [
+        "failure_next_30d",
+        "failure_type_predicted",
+        "risk_score",
+        "recommended_action",
+        "recommended_priority"
+    ]
+    numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
+    feature_cols = [c for c in numeric_cols if c not in targets + ["asset_id"]]
 
-preds = rf.predict(X_test)
+    df[feature_cols] = df[feature_cols].replace([np.inf, -np.inf], np.nan).fillna(0).clip(-1e6, 1e6)
 
-# --- Metrics ---
-rmse = np.sqrt(mean_squared_error(y_test, preds))
-r2 = r2_score(y_test, preds)
+    X = df[feature_cols].values
 
-print("RMSE:", rmse)
-print("R²:", r2)
-
-cv_scores = cross_val_score(rf, X_final, y, cv=5, scoring="r2")
-print("CV R²:", cv_scores.mean())
-
-joblib.dump(rf, "model.pkl")
+    return X, df, feature_cols
