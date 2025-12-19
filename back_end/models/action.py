@@ -2,7 +2,7 @@
 # model that determines the type of failure based on equipment features
 import os
 import numpy as np
-from tunnelvision_build_features import build_features as bf
+from train import build_features as bf
 from sklearn.preprocessing import LabelEncoder as le
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier as xgb
