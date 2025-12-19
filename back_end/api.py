@@ -13,7 +13,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://fictional-disco-976pvp495vj72x44p-5500.app.github.dev/predict"
+        "https://fictional-disco-976pvp495vj72x44p-5500.app.github.dev"
     ],
     allow_methods=["*"],
     allow_headers=["*"],
