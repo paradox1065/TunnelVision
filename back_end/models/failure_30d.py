@@ -1,19 +1,22 @@
 # model that predicts if there will be a failure in the next 30 days
-import pandas as pd
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from data.tunnelvision_build_features import build_features as bf
+import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score
-from data.tunnelvision_build_features import build_features as bf
 from scipy.sparse import csr_matrix
+import joblib
 
 # --- Paths ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
+csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_balanced.csv")
 print("Loading CSV from:", csv_path)
 
 # --- Load features ---
-X, df, feature_cols = bf(csv_path, target="failure_30d")
+X, df, feature_cols = bf(csv_path)
 
 y = df["failure_next_30d"].astype(int)
 
@@ -65,3 +68,10 @@ from sklearn.model_selection import cross_val_score
 cv_auc = cross_val_score(model, X, y, cv=5, scoring="roc_auc")
 print("CV ROC AUC:", cv_auc.mean())
 print("\n\n\n")
+
+# --- Path to save the model ---
+model_path = os.path.join(script_dir, "../models/failure_30d.pkl")
+
+# --- Dump the model ---
+joblib.dump(model, model_path)
+print(f"Model saved to: {model_path}")

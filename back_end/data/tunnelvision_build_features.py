@@ -62,7 +62,7 @@ def build_features(csv_path):
     
     df[lag_cols] = df[lag_cols].fillna(0)
     
-    df = df.drop(columns=["asset_id"], errors="ignore")
+    #df = df.drop(columns=["asset_id"], errors="ignore")
     
     # --- Encode categorical columns ---
     cat_cols = ["type", "material", "soil_type", "region", "traffic"]
