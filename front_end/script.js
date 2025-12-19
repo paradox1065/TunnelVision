@@ -60,6 +60,8 @@ document.getElementById("assetForm").addEventListener("submit", async function (
       ? "https://fictional-disco-976pvp495vj72x44p-8000.app.github.dev"
       : "http://127.0.0.1:8000";
 
+    console.log("Sending to API:", payload);
+
     const response = await fetch(`${API_BASE}/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
