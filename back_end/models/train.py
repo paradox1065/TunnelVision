@@ -5,8 +5,6 @@ def build_features(csv_path, target=None):
     df = pd.read_csv(csv_path)
     df.columns = df.columns.str.lower().str.strip().str.replace(" ", "_")
 
-    df = pd.read_csv("../data/bay_area_infrastructure_modified.csv")
-
     # drop the column
     df = df.drop(columns=["issue_description"])
 
