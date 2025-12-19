@@ -1,11 +1,10 @@
-# model that determines if there will be a failure in the next 30 days based on equipment features
 # model that predicts if there will be a failure in the next 30 days
 import pandas as pd
 import os
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score
-from data.tunnelvision_build_features import build_features as bf
+from tunnelvision_build_features import build_features as bf
 from scipy.sparse import csr_matrix
 
 # --- Paths ---
@@ -14,7 +13,7 @@ csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.cs
 print("Loading CSV from:", csv_path)
 
 # --- Load features ---
-X, df, vectorizer = bf(csv_path)
+X, df, feature_cols = bf(csv_path, target="failure_30d")
 
 y = df["failure_next_30d"].astype(int)
 
@@ -41,7 +40,7 @@ y_test = y[test_mask]
 # --- Train Random Forest ---
 model = RandomForestClassifier(
     n_estimators=300,
-    max_depth=8,
+    max_depth=4,
     class_weight="balanced",
     random_state=42
 )
