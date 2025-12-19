@@ -80,15 +80,13 @@ document.getElementById("assetForm").addEventListener("submit", async function (
 });
 
 function displayResults(data) {
-  let output = `
-    🔍 TunnelVision Prediction
-
-    Failure in 30 Days: ${data.failure_in_30_days ? "Yes" : "No"}
-    Failure Type: ${data.failure_type}
-    Risk Score: ${data.risk_score}/100
-    Priority Level: ${data.priority}
-    Recommended Action: ${data.recommended_action}
+  const outputDiv = document.getElementById("results");
+  outputDiv.innerHTML = `
+    <h3>🔍 TunnelVision Prediction</h3>
+    <p>Failure in 30 Days: <b>${data.failure_in_30_days ? "Yes" : "No"}</b></p>
+    <p>Failure Type: ${data.failure_type}</p>
+    <p>Risk Score: ${data.risk_score}/100</p>
+    <p>Priority Level: ${data.priority}</p>
+    <p>Recommended Action: ${data.recommended_action}</p>
   `;
-
-  alert(output);
 }
