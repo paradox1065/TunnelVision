@@ -7,7 +7,6 @@
   <title>About</title>
 </head>
 <body>
-  <script src="script.js"></script>
    <div class="tabs">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
@@ -22,7 +21,7 @@
 
     <!-- 1. Type -->
     <label>Type</label>
-    <select id=""type" required>
+    <select id="type" required>
       <option value="">Select type</option>
       <option>Bridge</option>
       <option>Electrical Conduit</option>
@@ -127,15 +126,9 @@
 
   <script>
     // default observed date = today
-    document.getElementById("observedDate").valueAsDate = new Date();
-
-    // 4-word limit
-    document.getElementById("issue").addEventListener("input", function () {
-      const words = this.value.trim().split(/\s+/);
-      if (words.length > 4) {
-        this.value = words.slice(0, 4).join(" ");
-      }
-    });
+    document.getElementById("snapshot_date").valueAsDate = new Date();
   </script>
   </div>
+  <script src="script.js"></script>
+</body>
 </html>
