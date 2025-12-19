@@ -37,13 +37,13 @@ document.getElementById("assetForm").addEventListener("submit", async function (
     region: document.getElementById("region").value || null,
     exact_location:
       lat && lon ? [parseFloat(lat), parseFloat(lon)] : null,
-    date_of_last_repair: formatDate(
+    last_repair_date: formatDate(
       document.getElementById("last_repair").value
     ),
     snapshot_date: formatDate(
       document.getElementById("snapshot_date").value
     ),
-    install_year: document.getElementById("install_year").value,
+    install_year: parseInt(document.getElementById("install_year").value),
     length_m: document.getElementById("length_m").value
       ? parseFloat(document.getElementById("length_m").value)
       : null
