@@ -1,5 +1,4 @@
 # model that determines the priority level of asset maintenance based on equipment features
-# model that determines the priority level of asset maintenance based on equipment features
 import pandas as pd
 import os
 import numpy as np
@@ -8,11 +7,13 @@ from sklearn.ensemble import RandomForestRegressor as rfr
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from scipy.sparse import csr_matrix
 from tunnelvision_build_features import build_features as bf
+from sklearn.model_selection import cross_val_score
+import joblib
 
 # --- Paths ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
 csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
-print("Loading CSV from:", csv_path)
+
 
 # --- Build features ---
 X, df, feature_cols = bf(csv_path, target="recommended_priority")
@@ -50,9 +51,13 @@ y_pred = model.predict(X_test)
 mae = mean_absolute_error(y_test, y_pred)
 rmse = math.sqrt(mean_squared_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
+cv_auc = cross_val_score(model, X_train, y_train, cv=5, scoring="roc_auc")
+print("\n\n\n--- Test Metrics ---")
+print("CV ROC AUC:", cv_auc.mean())
 print("MAE:", mae)
 print("RMSE:", rmse)
 print("R²:", r2)
+
 import numpy as np
 from sklearn.metrics import mean_absolute_error
 
@@ -60,3 +65,17 @@ from sklearn.metrics import mean_absolute_error
 baseline_pred = np.full_like(y_test, y_train.mean())
 baseline_mae = mean_absolute_error(y_test, baseline_pred)
 print("Baseline MAE:", baseline_mae)
+print("\n\n\n")
+
+model_dir = os.path.join(script_dir, "../models")
+os.makedirs(model_dir, exist_ok=True)
+
+joblib.dump(
+    model,
+    os.path.join(model_dir, "recommended_priority_rfr.pkl")
+)
+
+joblib.dump(
+    feature_cols,
+    os.path.join(model_dir, "recommended_priority_features.pkl")
+)
