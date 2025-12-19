@@ -26,7 +26,7 @@ class PredictionRequest(BaseModel):
     date_of_last_repair: str # required, format "MM-DD-YYYY"
     snapshot_date: Optional[str] = date.today # default is today
     install_year: str # required
-    length_m: float # optional, strongly recommended
+    length_m: Optional[float] = None # optional, strongly recommended
 
     @model_validator(mode="after")
     def check_location_or_region(self):

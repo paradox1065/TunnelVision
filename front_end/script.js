@@ -41,7 +41,7 @@ document.getElementById("assetForm").addEventListener("submit", async function (
       document.getElementById("last_repair").value
     ),
     snapshot_date: formatDate(
-      document.getElementById("observedDate").value
+      document.getElementById("snapshot_date").value
     ),
     install_year: document.getElementById("install_year").value,
     length_m: document.getElementById("length_m").value
@@ -57,7 +57,7 @@ document.getElementById("assetForm").addEventListener("submit", async function (
 
   try {
     const API_BASE = window.location.hostname.includes("githubpreview")
-      ? "https://fictional-disco-976pvp495vj72x44p-8000.app.github.dev/"
+      ? "https://fictional-disco-976pvp495vj72x44p-8000.app.github.dev"
       : "http://127.0.0.1:8000";
 
     const response = await fetch(`${API_BASE}/predict`, {
