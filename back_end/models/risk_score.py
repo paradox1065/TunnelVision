@@ -5,7 +5,7 @@ import math
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from scipy.sparse import csr_matrix
-from tunnelvision_build_features import build_features as bf
+from train import build_features as bf
 from sklearn.model_selection import cross_val_score
 import joblib
 
