@@ -1,86 +1,80 @@
-import pandas as pd
+# model that predicts risk_score
+import os
 import numpy as np
+import math
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from scipy.sparse import csr_matrix
+from tunnelvision_build_features import build_features as bf
+from sklearn.model_selection import cross_val_score
+import joblib
 
-def build_features(csv_path, target=None):
-    df = pd.read_csv(csv_path)
-    df.columns = df.columns.str.lower().str.strip().str.replace(" ", "_")
+# --- Paths ---
+script_dir = os.path.dirname(os.path.abspath(__file__))
+csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
+print("Loading CSV from:", csv_path)
 
-    # -------------------------
-    # Base cleaning
-    # -------------------------
-    df["snapshot_date"] = pd.to_datetime(df["snapshot_date"])
-    df["last_repair_date"] = pd.to_datetime(df["last_repair_date"], errors="coerce")
+# --- Build features ---
+X, df, feature_cols = bf(csv_path, target="risk_score")
 
-    df["days_since_repair"] = (
-        df["snapshot_date"] - df["last_repair_date"]
-    ).dt.days.fillna(999)
+# --- Target ---
+y = df["risk_score"].clip(5, 95)
 
-    df["asset_age_years"] = (
-        df["snapshot_date"].dt.year - df["install_year"]
-    ).clip(lower=0)
+# --- Asset-based split ---
+asset_ids = df["asset_id"].unique()
+np.random.seed(42)
+np.random.shuffle(asset_ids)
+split_idx = int(0.8 * len(asset_ids))
+train_assets = asset_ids[:split_idx]
+test_assets = asset_ids[split_idx:]
+train_mask = df["asset_id"].isin(train_assets)
+test_mask = df["asset_id"].isin(test_assets)
 
-    # -------------------------
-    # SAFE engineered features
-    # -------------------------
-    df["failures_prev"] = df.groupby("asset_id")["num_prev_failures"].shift(1).fillna(0)
-    df["recent_repair"] = (df["days_since_repair"] < 180).astype(int)
-    df["old_asset"] = (df["asset_age_years"] > 40).astype(int)
+# --- Convert to CSR ---
+from scipy.sparse import csr_matrix
+X = csr_matrix(X)
 
-    # -------------------------
-    # Environmental stress
-    # -------------------------
-    df["rain_stress"] = df["rainfall_mm"] * df["slope_grade"]
-    df["moisture_stress"] = df["soil_moisture_pc"] * df["slope_grade"]
-    df["env_stress"] = df["rainfall_mm"] * 0.4 + df["soil_moisture_pc"] * 0.6
-    df["temp_stress"] = df["avg_temp_c"] * df["slope_grade"]
+X_train = X[train_mask.values]
+X_test = X[test_mask.values]
+y_train = y[train_mask.values]
+y_test = y[test_mask.values]
 
-    # -------------------------
-    # Structural features
-    # -------------------------
-    df["structural_risk"] = df["asset_age_years"] * df["length_m"]
-    df["length_age"] = df["length_m"] * df["asset_age_years"]
-    df["length_slope"] = df["length_m"] * df["slope_grade"]
-    df["failure_pressure"] = df["num_prev_failures"] * np.log1p(df["days_since_repair"])
+# --- Model ---
+from sklearn.ensemble import GradientBoostingRegressor
+model = GradientBoostingRegressor(
+    n_estimators=150,
+    learning_rate=0.05,
+    max_depth=2,
+    subsample=0.6,
+    random_state=42
+)
+model.fit(X_train, y_train)
 
-    # -------------------------
-    # Extra interaction features for risk_score
-    # -------------------------
-    # Combine age, slope, and length — older long steep assets are riskier
-    df["age_length_slope"] = df["asset_age_years"] * df["length_m"] * df["slope_grade"]
+# --- Predictions & metrics ---
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import math
+y_pred = model.predict(X_test)
+mae = mean_absolute_error(y_test, y_pred)
+rmse = math.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+cv_auc = cross_val_score(model, X_train, y_train, cv=5, scoring="roc_auc")
 
-    # Combine previous failures with environmental stress — assets with many failures in harsh conditions are higher risk
-    df["failures_env_stress"] = df["failures_prev"] * df["env_stress"]
+print("\n\n\n--- Test Metrics ---")
+print("CV ROC AUC:", cv_auc.mean())
+print("MAE:", mae)
+print("RMSE:", rmse)
+print("R²:", r2)
+print("\n\n\n")
 
-    # Length * rainfall stress — longer assets in heavy rain are riskier
-    df["length_rain_stress"] = df["length_m"] * df["rainfall_mm"]
+model_dir = os.path.join(script_dir, "../models")
+os.makedirs(model_dir, exist_ok=True)
 
-    # Soil moisture * asset age — old assets in wet soil are at risk
-    df["moisture_age"] = df["soil_moisture_pc"] * df["asset_age_years"]
+joblib.dump(
+    model,
+    os.path.join(model_dir, "risk_score_gbr.pkl")
+)
 
-    # Combined structural + environmental pressure
-    df["struct_env_pressure"] = df["structural_risk"] * df["env_stress"]
-
-    # -------------------------
-    # Categorical encoding
-    # -------------------------
-    cat_cols = ["type", "material", "soil_type", "region", "traffic"]
-    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
-
-    # -------------------------
-    # Numeric features only, drop targets and asset_id
-    # -------------------------
-    targets = [
-        "failure_next_30d",
-        "failure_type_predicted",
-        "risk_score",
-        "recommended_action",
-        "recommended_priority"
-    ]
-    numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
-    feature_cols = [c for c in numeric_cols if c not in targets + ["asset_id"]]
-
-    df[feature_cols] = df[feature_cols].replace([np.inf, -np.inf], np.nan).fillna(0).clip(-1e6, 1e6)
-
-    X = df[feature_cols].values
-
-    return X, df, feature_cols
+joblib.dump(
+    feature_cols,
+    os.path.join(model_dir, "risk_score_features.pkl")
+)
