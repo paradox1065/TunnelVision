@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About</title>
 </head>
 <body>
-  <script src="get_user_location.js"></script>
+  <script src="script.js"></script>
    <div class="tabs">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
-    <a href="Form.html"class="active-tab">Form</a>
+    <a href="Instructions.html"class="active-tab">Form</a>
+  
   </div>
   <div class="content">
   <h1>TunnelVision</h1>
@@ -50,6 +51,30 @@
       <option>Steel</option>
     </select>
 
+<!-- Exact Coordinates -->
+<label>Latitude (optional)</label>
+<input
+  type="number"
+  step="0.000001"
+  min="-90"
+  max="90"
+  placeholder="e.g. 37.7749"
+  
+/>
+<small>Auto-filled if location is enabled</small>
+<label>Longitude (optional)</label>
+<input
+  type="number"
+  step="0.000001"
+  min="-180"
+  max="180"
+  placeholder="e.g. -122.4194"
+  
+/>
+  <small>Auto-filled if location is enabled</small>
+  <button type="button" onclick="getLocation()">
+  Use My Current Location
+</button>
     <!-- 3. Region (optional) -->
     <label>Region (optional)</label>
     <select>
