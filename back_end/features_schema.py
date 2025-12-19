@@ -24,10 +24,10 @@ FEATURE_ORDER: List[str] = [
     "latitude",                # float
     "longitude",               # float
     "temperature_c",           # float (inferred)
-    "days_since_last_repair",  # int
-    "days_since_issue_observed",# int
+    "last_repair_date",        # str
+    "snapshot_date",           # str
     "install_year",            # int
-    "issue_description"         # encoded / embedded
+    "length_m"                 # float        # encoded / embedded
 ]
 
 # ---------------------------------------------------------------------------
@@ -46,17 +46,17 @@ def build_feature_vector(values: Dict[str, Any]) -> List[Any]:
 
     Example:
         features = build_feature_vector({
-            "type": 1,
-            "material": 0,
-            "region": 2,
-            "soil_type": 3,
+            "type": "Road",
+            "material": "Asphalt",
+            "region": "Santa Clara",
+            "soil_type": "Gravel",
             "latitude": 37.33,
             "longitude": -121.89,
             "temperature_c": 18.7,
-            "days_since_last_repair": 420,
-            "days_since_issue_observed": 12,
+            "last_repair_date": "01-01-2020",
+            "snapshot_date": "01-01-2024",
             "install_year": 2012,
-            "issue_description": 0.84,
+            "length_m": 150.47
         })
     """
 

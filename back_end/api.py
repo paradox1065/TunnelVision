@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from pydantic import model_validator
 from typing import Optional
 from datetime import date
-from features_schema import build_feature_vector
+from features_schema import build_feature_vector, assert_feature_length
 from model_utils import predict_all, get_location_from_region, get_temperature
 
 app = FastAPI()
@@ -25,9 +25,9 @@ class PredictionRequest(BaseModel):
     region: Optional[str] = None # optional (required if there is no exact_location)
     soil_type: str # required
     exact_location: Optional[tuple[float, float]] = None # optional, strongly recommended
-    date_of_last_repair: str # required, format "MM-DD-YYYY"
-    snapshot_date: Optional[str] = date.today # default is today
-    install_year: str # required
+    last_repair_date: str # required, format "MM-DD-YYYY"
+    snapshot_date: Optional[str] = None # default is today, will fix in predict()
+    install_year: int # required
     length_m: Optional[float] = None # optional, strongly recommended
 
     @model_validator(mode="after")
@@ -57,21 +57,26 @@ def predict(data: PredictionRequest):
     # --- Temperature inference ---
     temperature_c = get_temperature(lat, lon)
 
-    # --- Feature list construction ---
-    features = build_feature_vector(
-    type=data.type,
-    material=data.material,
-    region=data.region,
-    soil_type=data.soil_type,
-    lat=lat,
-    lon=lon,
-    temperature_c=temperature_c,
-    date_of_last_repair=data.date_of_last_repair,
-    snapshot_date=data.snapshot_date,
-    install_year=data.install_year,
-    length_m=data.length_m
-)
+    # --- Snapshot date defaulting ---
+    if data.snapshot_date is None:
+        data.snapshot_date = date.today().strftime("%m-%d-%Y")
 
+    # --- Feature list construction ---
+    feature_dict = {
+    "type": data.type,
+    "material": data.material,
+    "region": data.region,
+    "soil_type": data.soil_type,
+    "latitude": lat,
+    "longitude": lon,
+    "temperature_c": temperature_c,
+    "last_repair_date": data.last_repair_date,
+    "snapshot_date": data.snapshot_date,
+    "install_year": data.install_year,
+    "length_m": data.length_m,
+    }
+    features = build_feature_vector(feature_dict)
+    assert_feature_length(features)
 
     # --- Call the predict_all function from model_utils.py ---
     prediction = predict_all(features)
