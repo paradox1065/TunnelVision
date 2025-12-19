@@ -12,7 +12,9 @@ app = FastAPI()
 # --- Allows front-end to access the back-end ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://fictional-disco-976pvp495vj72x44p-5500.app.github.dev"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
