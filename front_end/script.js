@@ -23,9 +23,8 @@ function formatDate(dateStr) {
   return `${m}-${d}-${y}`;
 }
 
-
 document.getElementById("assetForm").addEventListener("submit", async function (e) {
-  e.preventDefault(); // stop page reload
+  e.preventDefault();
 
   const lat = document.getElementById("latitude").value;
   const lon = document.getElementById("longitude").value;
@@ -37,26 +36,21 @@ document.getElementById("assetForm").addEventListener("submit", async function (
     region: document.getElementById("region").value || null,
     exact_location:
       lat && lon ? [parseFloat(lat), parseFloat(lon)] : null,
-    last_repair_date: formatDate(
-      document.getElementById("last_repair").value
-    ),
-    snapshot_date: formatDate(
-      document.getElementById("snapshot_date").value
-    ),
+    last_repair_date: formatDate(document.getElementById("last_repair").value),
+    snapshot_date: formatDate(document.getElementById("snapshot_date").value),
     install_year: parseInt(document.getElementById("install_year").value),
     length_m: document.getElementById("length_m").value
       ? parseFloat(document.getElementById("length_m").value)
       : null
   };
 
-  // Validation: API requires region OR exact_location
   if (!payload.region && !payload.exact_location) {
     alert("Please provide either a region or an exact location.");
     return;
   }
 
   try {
-    const API_BASE = "http://127.0.0.1:8000"; // change before deploying
+    const API_BASE = "http://127.0.0.1:8000"; // Change for deployment
 
     console.log("Sending to API:", payload);
 
@@ -67,7 +61,8 @@ document.getElementById("assetForm").addEventListener("submit", async function (
     });
 
     if (!response.ok) {
-      throw new Error("Prediction failed");
+      const text = await response.text();
+      throw new Error(`Prediction failed: ${response.status} - ${text}`);
     }
 
     const result = await response.json();
