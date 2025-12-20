@@ -13,11 +13,16 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
         "https://fictional-disco-976pvp495vj72x44p-5500.app.github.dev"
     ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # --- Define what input data is needed for prediction in the format variable_name: data_type ---
 class PredictionRequest(BaseModel):
     type: str # required
