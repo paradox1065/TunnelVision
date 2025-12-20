@@ -11,9 +11,7 @@ function getLocation() {
       document.getElementById("longitude").value =
         position.coords.longitude.toFixed(6);
     },
-    () => {
-      alert("Location access was denied or unavailable.");
-    }
+    () => alert("Location access was denied or unavailable.")
   );
 }
 
@@ -23,7 +21,7 @@ function formatDate(dateStr) {
   return `${m}-${d}-${y}`;
 }
 
-document.getElementById("assetForm").addEventListener("submit", async function (e) {
+document.getElementById("assetForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const lat = document.getElementById("latitude").value;
@@ -34,14 +32,13 @@ document.getElementById("assetForm").addEventListener("submit", async function (
     material: document.getElementById("material").value,
     soil_type: document.getElementById("soil_type").value,
     region: document.getElementById("region").value || null,
-    exact_location:
-      lat && lon ? [parseFloat(lat), parseFloat(lon)] : null,
+    exact_location: lat && lon ? [parseFloat(lat), parseFloat(lon)] : null,
     last_repair_date: formatDate(document.getElementById("last_repair").value),
     snapshot_date: formatDate(document.getElementById("snapshot_date").value),
     install_year: parseInt(document.getElementById("install_year").value),
     length_m: document.getElementById("length_m").value
       ? parseFloat(document.getElementById("length_m").value)
-      : null
+      : null,
   };
 
   if (!payload.region && !payload.exact_location) {
@@ -50,14 +47,11 @@ document.getElementById("assetForm").addEventListener("submit", async function (
   }
 
   try {
-    const API_BASE = "http://127.0.0.1:8000"; // Change for deployment
-
-    console.log("Sending to API:", payload);
-
+    const API_BASE = "http://127.0.0.1:8000"; // Use deployed URL later
     const response = await fetch(`${API_BASE}/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -67,10 +61,9 @@ document.getElementById("assetForm").addEventListener("submit", async function (
 
     const result = await response.json();
     displayResults(result);
-
-  } catch (error) {
+  } catch (err) {
     alert("Error connecting to TunnelVision API");
-    console.error(error);
+    console.error(err);
   }
 });
 
@@ -85,3 +78,6 @@ function displayResults(data) {
     <p>Recommended Action: ${data.recommended_action}</p>
   `;
 }
+
+// Default snapshot date = today
+document.getElementById("snapshot_date").valueAsDate = new Date();
