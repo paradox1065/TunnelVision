@@ -1,37 +1,35 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, model_validator
-from typing import Optional, List
+from typing import Optional
 from datetime import date
-from features_schema import build_feature_vector, assert_feature_length
-from model_utils import predict_all, get_location_from_region, get_temperature
+
+# --- relative imports from same package ---
+from .features_schema import build_feature_vector, assert_feature_length
+from .model_utils import predict_all, get_location_from_region, get_temperature
 
 app = FastAPI()
 
-# --- CORS setup ---
+# --- Allows front-end to access the back-end ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:8000",
-        "http://localhost:8000",
         "https://fictional-disco-976pvp495vj72x44p-5500.app.github.dev"
     ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Request Model ---
+# --- Define what input data is needed for prediction ---
 class PredictionRequest(BaseModel):
-    type: str
-    material: str
-    region: Optional[str] = None
-    soil_type: str
-    exact_location: Optional[List[float]] = None
-    last_repair_date: str
+    type: str  # required
+    material: str  # required
+    region: Optional[str] = None  # optional (required if no exact_location)
+    soil_type: str  # required
+    exact_location: Optional[tuple[float, float]] = None
+    last_repair_date: str  # required, format "MM-DD-YYYY"
     snapshot_date: Optional[str] = None
-    install_year: int
+    install_year: int  # required
     length_m: Optional[float] = None
 
     @model_validator(mode="after")
@@ -40,7 +38,6 @@ class PredictionRequest(BaseModel):
             raise ValueError("Either exact_location or region must be provided.")
         return self
 
-# --- Response Model ---
 class PredictionResponse(BaseModel):
     failure_in_30_days: bool
     failure_type: str
@@ -50,19 +47,20 @@ class PredictionResponse(BaseModel):
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(data: PredictionRequest):
-    # --- Resolve location ---
+    # --- Location resolution ---
     if data.exact_location is not None:
         lat, lon = data.exact_location
     else:
         lat, lon = get_location_from_region(data.region)
 
-    # --- Get temperature ---
+    # --- Temperature inference ---
     temperature_c = get_temperature(lat, lon)
 
-    # --- Snapshot date ---
-    snapshot_date = data.snapshot_date or date.today().strftime("%m-%d-%Y")
+    # --- Snapshot date defaulting ---
+    if data.snapshot_date is None:
+        data.snapshot_date = date.today().strftime("%m-%d-%Y")
 
-    # --- Build feature dict ---
+    # --- Feature list construction ---
     feature_dict = {
         "type": data.type,
         "material": data.material,
@@ -72,7 +70,7 @@ def predict(data: PredictionRequest):
         "longitude": lon,
         "temperature_c": temperature_c,
         "last_repair_date": data.last_repair_date,
-        "snapshot_date": snapshot_date,
+        "snapshot_date": data.snapshot_date,
         "install_year": data.install_year,
         "length_m": data.length_m,
     }
@@ -80,6 +78,6 @@ def predict(data: PredictionRequest):
     features = build_feature_vector(feature_dict)
     assert_feature_length(features)
 
-    # --- Predict ---
+    # --- Call the predict_all function from model_utils.py ---
     prediction = predict_all(features)
     return prediction
