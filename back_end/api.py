@@ -63,8 +63,8 @@ def predict(data: PredictionRequest):
     temperature_c = get_temperature(lat, lon)
 
     # --- Snapshot date defaulting ---
-    if data.snapshot_date is None:
-        data.snapshot_date = date.today().strftime("%m-%d-%Y")
+    snapshot_date = data.snapshot_date or date.today().strftime("%m-%d-%Y")
+
 
     # --- Feature list construction ---
     feature_dict = {
@@ -76,7 +76,7 @@ def predict(data: PredictionRequest):
     "longitude": lon,
     "temperature_c": temperature_c,
     "last_repair_date": data.last_repair_date,
-    "snapshot_date": data.snapshot_date,
+    "snapshot_date": snapshot_date,
     "install_year": data.install_year,
     "length_m": data.length_m,
     }
