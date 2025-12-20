@@ -29,7 +29,7 @@ class PredictionRequest(BaseModel):
     material: str # required
     region: Optional[str] = None # optional (required if there is no exact_location)
     soil_type: str # required
-    exact_location: Optional[tuple[float, float]] = None # optional, strongly recommended
+    exact_location: Optional[List[float]] = None # optional, strongly recommended
     last_repair_date: str # required, format "MM-DD-YYYY"
     snapshot_date: Optional[str] = None # default is today, will fix in predict()
     install_year: int # required
