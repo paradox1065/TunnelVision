@@ -1,8 +1,7 @@
 # model that determines recommended actions based on equipment features
-# model that determines the type of failure based on equipment features
 import os
 import numpy as np
-from train import build_features as bf
+from .train import build_features as bf
 from sklearn.preprocessing import LabelEncoder as le
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier as xgb
@@ -76,3 +75,22 @@ joblib.dump(
     feature_cols_reduced,
     os.path.join(model_dir, "recommended_action_features.pkl")
 )
+
+
+# inference function
+from pathlib import Path
+from .preprocessing import build_features_for_inference
+
+BASE_DIR = Path(__file__).parent
+
+# Load model + label encoder
+action_model = joblib.load(BASE_DIR / "models" / "recommended_action_xgb.pkl")
+action_le = joblib.load(BASE_DIR / "models" / "recommended_action_label_encoder.pkl")
+
+def predict_action(feature_dict: dict) -> str:
+    X = build_features_for_inference(feature_dict)
+    action_idx = int(action_model.predict(X)[0])
+    return action_le.inverse_transform([action_idx])[0]
+
+
+

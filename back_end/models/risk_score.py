@@ -11,7 +11,7 @@ import joblib
 
 # --- Paths ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
+csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_balanced.csv")
 print("Loading CSV from:", csv_path)
 
 # --- Build features ---
@@ -93,3 +93,19 @@ joblib.dump(
     feature_cols,
     os.path.join(model_dir, "risk_score_features.pkl")
 )
+
+
+
+# Inference function``
+from pathlib import Path
+from .preprocessing import build_features_for_inference
+
+BASE_DIR = Path(__file__).parent
+
+risk_model = joblib.load(BASE_DIR / "models" / "risk_score_gbr.pkl")
+
+def predict_risk_score(feature_dict: dict) -> int:
+    X = build_features_for_inference(feature_dict)
+    return int(risk_model.predict(X)[0])
+
+

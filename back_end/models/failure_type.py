@@ -104,3 +104,19 @@ joblib.dump(
     feature_cols,
     os.path.join(model_dir, "failure_type_features.pkl")
 )
+
+
+# inference function
+from pathlib import Path
+from .preprocessing import build_features_for_inference
+
+BASE_DIR = Path(__file__).parent
+
+failure_type_model = joblib.load(BASE_DIR / "models" / "failure_type_predicted_xgb.pkl")
+failure_type_le = joblib.load(BASE_DIR / "models" / "failure_type_label_encoder.pkl")
+
+def predict_failure_type(feature_dict: dict) -> str:
+    X = build_features_for_inference(feature_dict)
+    idx = int(failure_type_model.predict(X)[0])
+    return failure_type_le.inverse_transform([idx])[0]
+

@@ -12,7 +12,7 @@ import joblib
 
 # --- Paths ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_modified.csv")
+csv_path = os.path.join(script_dir, "../data/bay_area_infrastructure_balanced.csv")
 
 
 # --- Build features ---
@@ -94,3 +94,18 @@ joblib.dump(
     feature_cols,
     os.path.join(model_dir, "recommended_priority_features.pkl")
 )
+
+
+# --- Inference function ---
+from pathlib import Path
+from .preprocessing import build_features_for_inference
+
+BASE_DIR = Path(__file__).parent
+
+priority_model = joblib.load(BASE_DIR / "models" / "recommended_priority_rfr.pkl")
+
+def predict_priority(feature_dict: dict) -> int:
+    X = build_features_for_inference(feature_dict)
+    return int(priority_model.predict(X)[0])
+
+

@@ -97,3 +97,17 @@ metrics = {
 
 with open(os.path.join(model_dir, "failure_30d_metrics.json"), "w") as f:
     json.dump(metrics, f, indent=2)
+
+
+# --- Inference function ---
+from pathlib import Path
+from .preprocessing import build_features_for_inference
+
+BASE_DIR = Path(__file__).parent
+
+failure_model = joblib.load(BASE_DIR / "models" / "failure_30d_rfc.pkl")
+
+def predict_failure_30d(feature_dict: dict) -> bool:
+    X = build_features_for_inference(feature_dict)
+    return bool(failure_model.predict(X)[0])
+

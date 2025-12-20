@@ -1,22 +1,25 @@
-import joblib
+from pathlib import Path
+from .models.action import predict_action
+from .models.failure_30d import predict_failure_30d
+from .models.failure_type import predict_failure_type
+from .models.priority import predict_priority
+from .models.risk_score import predict_risk_score
+from .models.preprocessing import build_features_for_inference
 import requests
 
-# --- Load models (assumes models/ folder is inside back_end) ---
-failure_model = joblib.load("back_end/models/failure_30d_features.pkl")
-failure_type_model = joblib.load("back_end/models/failure_type_features.pkl")
-risk_model = joblib.load("back_end/models/risk_score_features.pkl")
-action_model = joblib.load("back_end/models/recommended_action_features.pkl")
-priority_model = joblib.load("back_end/models/recommended_priority_features.pkl")
+BASE_DIR = Path(__file__).parent
 
-def predict_all(features: list):
+def predict_all(feature_dict: dict):
     return {
-        "failure_in_30_days": bool(failure_model.predict([features])[0]),
-        "failure_type": failure_type_model.predict([features])[0],
-        "risk_score": int(risk_model.predict([features])[0]),
-        "recommended_action": action_model.predict([features])[0],
-        "priority": int(priority_model.predict([features])[0]),
+        "failure_in_30_days": predict_failure_30d(feature_dict),
+        "failure_type": predict_failure_type(feature_dict),
+        "risk_score": predict_risk_score(feature_dict),
+        "recommended_action": predict_action(feature_dict),
+        "priority": predict_priority(feature_dict),
     }
 
+
+# --- Region coordinates ---
 REGION_COORDINATES = {
     "Contra Costa": (37.9199, -121.9358),
     "Alameda": (37.756944, -122.274444),
@@ -25,13 +28,12 @@ REGION_COORDINATES = {
     "Napa": (38.297804, -122.28636),
     "San Francisco": (37.715, -122.4285),
     "Marin": (37.868538, -122.5091404),
-    "San Mateo": (37.563, 122.324),
+    "San Mateo": (37.563, -122.324),
     "Solano": (38.316, -122.018),
 }
 
 def get_location_from_region(region: str) -> tuple[float, float]:
-    region = region.strip()
-    return REGION_COORDINATES.get(region, (37.338207, -121.886330))  # default San Jose
+    return REGION_COORDINATES.get(region.strip(), (37.338207, -121.886330))
 
 def get_temperature(lat: float, lon: float) -> float:
     try:
@@ -40,9 +42,42 @@ def get_temperature(lat: float, lon: float) -> float:
             f"?latitude={lat}&longitude={lon}"
             "&current_weather=true"
         )
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
         response.raise_for_status()
-        data = response.json()
-        return data.get("current_weather", {}).get("temperature", 15.0)
+        return response.json().get("current_weather", {}).get("temperature", 15.0)
     except Exception:
         return 15.0
+    
+def get_region_from_location(lat: float, lon: float):
+    if 36.89238291632208 <= lat <= 37.48534080282651 and -122.20259387759805 <= lon <= -121.21382434174066:
+        return "Santa Clara"
+    elif 37.45422122137626 <= lat <= 37.90527 and -122.34177172635131 <= lon <= -121.46973192736596:
+        return "Alameda"
+    elif 38.11230588756946 <= lat <= 38.85190504809042 and -123.5324716054025 <= lon <= -122.34869474441764:
+        return "Sonoma"
+    elif 37.71888575931279 <= lat <= 38.10135722489106 and -122.4300892162658 <= lon <= -121.53333017888399:
+        return "Contra Costa"
+    elif 38.153660062350056 <= lat <= 38.86397170801056 and -122.64656355512427 <= lon <= -122.06154157974197:
+        return "Napa"
+    elif 37.70841124861289 <= lat <= 37.81141713562808 and -122.51793825593296 <= lon <= -122.3278475588094:
+        return "San Francisco"
+    elif 37.8152822778324 <= lat <= 38.32117636904628 and -123.03056485363471 <= lon <= -122.41258389372383:
+        return "Marin"
+    elif 37.10780636280471 <= lat <= 37.70994030426103 and -122.52143637988625 <= lon <= -122.20259387759806:
+        return "San Mateo"
+    elif 38.0398174918701 <= lat <= 38.54067561081478 and -122.40928351247523 <= lon <= -121.59217535437085:
+        return "Solano"
+    
+def get_traffic_from_region(region: str) -> str:
+    region_traffic = {
+        "San Francisco": "high",
+        "Santa Clara": "high",
+        "Alameda": "medium",
+        "Contra Costa": "medium",
+        "San Mateo": "medium",
+        "Marin": "low",
+        "Napa": "low",
+        "Sonoma": "low",
+        "Solano": "low",
+    }
+    return region_traffic.get(region.strip(), "low")

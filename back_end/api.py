@@ -4,31 +4,31 @@ from pydantic import BaseModel, model_validator
 from typing import Optional, Tuple
 from datetime import date
 
-# Relative imports
-from .features_schema import build_feature_vector, assert_feature_length
-from .model_utils import predict_all, get_location_from_region, get_temperature
+from .model_utils import predict_all, get_location_from_region, get_temperature, get_region_from_location, get_traffic_from_region
 
 app = FastAPI()
 
-# Allow front-end to access the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For local dev, later restrict to your domain
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Input schema
+# -------------------------
+# Request & Response Models
+# -------------------------
 class PredictionRequest(BaseModel):
     type: str
     material: str
     region: Optional[str] = None
     soil_type: str
+
     exact_location: Optional[Tuple[float, float]] = None
     last_repair_date: str
     snapshot_date: Optional[str] = None
     install_year: int
-    length_m: Optional[float] = None
+    length_m: Optional[float] = 10.0
 
     @model_validator(mode="after")
     def check_location_or_region(self):
@@ -36,7 +36,6 @@ class PredictionRequest(BaseModel):
             raise ValueError("Either exact_location or region must be provided.")
         return self
 
-# Output schema
 class PredictionResponse(BaseModel):
     failure_in_30_days: bool
     failure_type: str
@@ -44,37 +43,43 @@ class PredictionResponse(BaseModel):
     recommended_action: str
     priority: int
 
+# -------------------------
+# API Endpoint
+# -------------------------
 @app.post("/predict", response_model=PredictionResponse)
 def predict(data: PredictionRequest):
-    # Resolve location
-    if data.exact_location is not None:
-        lat, lon = data.exact_location
-    else:
-        lat, lon = get_location_from_region(data.region)
-
-    # Temperature
+    # Determine latitude/longitude
+    lat, lon = data.exact_location or get_location_from_region(data.region)
+    region = data.region or get_region_from_location(lat, lon)
+    traffic = get_traffic_from_region(region)
     temperature_c = get_temperature(lat, lon)
 
-    # Default snapshot date
-    snapshot_date = data.snapshot_date or date.today().strftime("%m-%d-%Y")
+    snapshot_date = data.snapshot_date or date.today().strftime("%Y-%m-%d")
 
-    # Feature dictionary
+    # Build full feature dictionary (matches training expectations)
     feature_dict = {
         "type": data.type,
         "material": data.material,
-        "region": data.region,
+        "region": region,
         "soil_type": data.soil_type,
+        "traffic": traffic,
+
         "latitude": lat,
         "longitude": lon,
-        "temperature_c": temperature_c,
+        "avg_temp_c": temperature_c,
+
+        # Safe defaults for environmental + history features
+        "rainfall_mm": 20.0,
+        "soil_moisture_pc": 30.0,
+        "slope_grade": 2.0,
+        "num_prev_failures": 0,
+        "failures_prev": 0,
+
         "last_repair_date": data.last_repair_date,
         "snapshot_date": snapshot_date,
         "install_year": data.install_year,
         "length_m": data.length_m,
     }
 
-    features = build_feature_vector(feature_dict)
-    assert_feature_length(features)
-
-    prediction = predict_all(features)
-    return prediction
+    # Predict all outputs using the unified pipeline
+    return predict_all(feature_dict)
