@@ -43,23 +43,24 @@ FEATURE_INDEX: Dict[str, int] = {name: i for i, name in enumerate(FEATURE_ORDER)
 def build_feature_vector(values: Dict[str, Any]) -> List[Any]:
     """
     Build a feature vector in the correct order.
-
-    Example:
-        features = build_feature_vector({
-            "type": "Road",
-            "material": "Asphalt",
-            "region": "Santa Clara",
-            "soil_type": "Gravel",
-            "latitude": 37.33,
-            "longitude": -121.89,
-            "temperature_c": 18.7,
-            "last_repair_date": "01-01-2020",
-            "snapshot_date": "01-01-2024",
-            "install_year": 2012,
-            "length_m": 150.47
-        })
+    Missing numeric features get default values.
     """
 
+    # fallback defaults
+    defaults = {
+        "temperature_c": 15.0,
+        "latitude": 37.33,
+        "longitude": -121.89,
+        "length_m": 0.0,
+        "install_year": 2000,
+    }
+
+    # fill missing keys with defaults if available
+    for key, val in defaults.items():
+        if key not in values:
+            values[key] = val
+
+    # check again for missing features
     missing = [f for f in FEATURE_ORDER if f not in values]
     if missing:
         raise ValueError(f"Missing features: {missing}")

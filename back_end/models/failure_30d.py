@@ -4,7 +4,7 @@ import os
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score
-from train import build_features as bf
+from .train import build_features as bf
 from scipy.sparse import csr_matrix
 import joblib
 
@@ -98,16 +98,31 @@ metrics = {
 with open(os.path.join(model_dir, "failure_30d_metrics.json"), "w") as f:
     json.dump(metrics, f, indent=2)
 
-
-# --- Inference function ---
+import sys 
 from pathlib import Path
-from .preprocessing import build_features_for_inference
+from back_end.features_schema import build_feature_vector  # existing function from your code
 
+# --- Paths ---
 BASE_DIR = Path(__file__).parent
 
-failure_model = joblib.load(BASE_DIR / "models" / "failure_30d_rfc.pkl")
+# --- Load trained model + label encoder ---
+failure_30d_model = joblib.load(BASE_DIR / "failure_30d_rfc.pkl")
+failure_30d_le = joblib.load(BASE_DIR / "failure_30d_features.pkl")
 
-def predict_failure_30d(feature_dict: dict) -> bool:
-    X = build_features_for_inference(feature_dict)
-    return bool(failure_model.predict(X)[0])
+def predict_failure_30d(feature_dict: dict) -> str:
+    """
+    Predict the recommended action for a single asset feature dictionary.
+    
+    Args:
+        feature_dict (dict): dictionary containing feature names and values.
+        
+    Returns:
+        str: predicted recommended action (decoded from label encoder)
+    """
+    # Build feature vector in correct order (as a 2D array for XGBoost)
+    X = [build_feature_vector(feature_dict)]
+    
+    # Predict and decode
+    failure_30d_idx = int(failure_30d_model.predict(X)[0])
+    return failure_30d_le.inverse_transform([failure_30d_idx])[0]
 

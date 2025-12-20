@@ -2,7 +2,7 @@
 # model that determines the type of failure based on equipment features
 import os
 import numpy as np
-from train import build_features as bf
+from .train import build_features as bf
 from sklearn.preprocessing import LabelEncoder as le
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier as xgb
@@ -106,17 +106,30 @@ joblib.dump(
 )
 
 
-# inference function
 from pathlib import Path
-from .preprocessing import build_features_for_inference
+from back_end.features_schema import build_feature_vector  # existing function from your code
 
+# --- Paths ---
 BASE_DIR = Path(__file__).parent
 
-failure_type_model = joblib.load(BASE_DIR / "models" / "failure_type_predicted_xgb.pkl")
-failure_type_le = joblib.load(BASE_DIR / "models" / "failure_type_label_encoder.pkl")
+# --- Load trained model + label encoder ---
+failure_type_model = joblib.load(BASE_DIR / "failure_type_predicted_xgb.pkl")
+failure_type_le = joblib.load(BASE_DIR / "failure_type_label_encoder.pkl")
 
 def predict_failure_type(feature_dict: dict) -> str:
-    X = build_features_for_inference(feature_dict)
-    idx = int(failure_type_model.predict(X)[0])
-    return failure_type_le.inverse_transform([idx])[0]
+    """
+    Predict the recommended action for a single asset feature dictionary.
+    
+    Args:
+        feature_dict (dict): dictionary containing feature names and values.
+        
+    Returns:
+        str: predicted recommended action (decoded from label encoder)
+    """
+    # Build feature vector in correct order (as a 2D array for XGBoost)
+    X = [build_feature_vector(feature_dict)]
+    
+    # Predict and decode
+    failure_type_idx = int(failure_type_model.predict(X)[0])
+    return failure_type_le.inverse_transform([failure_type_idx])[0]
 

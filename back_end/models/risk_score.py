@@ -5,7 +5,7 @@ import math
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from scipy.sparse import csr_matrix
-from train import build_features as bf
+from .train import build_features as bf
 from sklearn.model_selection import cross_val_score
 import joblib
 
@@ -96,16 +96,31 @@ joblib.dump(
 
 
 
-# Inference function``
 from pathlib import Path
-from .preprocessing import build_features_for_inference
+from back_end.features_schema import build_feature_vector  # existing function from your code
 
+# --- Paths ---
 BASE_DIR = Path(__file__).parent
 
-risk_model = joblib.load(BASE_DIR / "models" / "risk_score_gbr.pkl")
+# --- Load trained model + label encoder ---
+risk_score_model = joblib.load(BASE_DIR / "risk_score_gbr.pkl")
+risk_score_le = joblib.load(BASE_DIR / "risk_score_features.pkl")
 
-def predict_risk_score(feature_dict: dict) -> int:
-    X = build_features_for_inference(feature_dict)
-    return int(risk_model.predict(X)[0])
+def predict_risk_score(feature_dict: dict) -> str:
+    """
+    Predict the recommended action for a single asset feature dictionary.
+    
+    Args:
+        feature_dict (dict): dictionary containing feature names and values.
+        
+    Returns:
+        str: predicted recommended action (decoded from label encoder)
+    """
+    # Build feature vector in correct order (as a 2D array for XGBoost)
+    X = [build_feature_vector(feature_dict)]
+    
+    # Predict and decode
+    risk_score_idx = int(risk_score_model.predict(X)[0])
+    return risk_score_le.inverse_transform([risk_score_idx])[0]
 
 

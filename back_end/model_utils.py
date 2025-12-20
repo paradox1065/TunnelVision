@@ -1,10 +1,10 @@
 from pathlib import Path
-from .models.action import predict_action
-from .models.failure_30d import predict_failure_30d
-from .models.failure_type import predict_failure_type
-from .models.priority import predict_priority
-from .models.risk_score import predict_risk_score
-from .models.preprocessing import build_features_for_inference
+from back_end.models.action import predict_action
+from back_end.models.failure_30d import predict_failure_30d
+from back_end.models.failure_type import predict_failure_type
+from back_end.models.priority import predict_priority
+from back_end.models.risk_score import predict_risk_score
+from back_end.models.preprocessing import build_features_for_inference
 import requests
 
 BASE_DIR = Path(__file__).parent
