@@ -87,7 +87,7 @@ BASE_DIR = Path(__file__).parent
 action_model = joblib.load(BASE_DIR / "recommended_action_xgb.pkl")
 action_le = joblib.load(BASE_DIR / "recommended_action_label_encoder.pkl")
 
-def predict_action(feature_dict: dict) -> str:
+def predict_action(X) -> str:
     """
     Predict the recommended action for a single asset feature dictionary.
     
@@ -98,9 +98,6 @@ def predict_action(feature_dict: dict) -> str:
         str: predicted recommended action (decoded from label encoder)
     """
     # Build feature vector in correct order (as a 2D array for XGBoost)
-    X = [build_feature_vector(feature_dict)]
-    
-    # Predict and decode
     action_idx = int(action_model.predict(X)[0])
     return action_le.inverse_transform([action_idx])[0]
 

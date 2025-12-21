@@ -116,7 +116,7 @@ BASE_DIR = Path(__file__).parent
 failure_type_model = joblib.load(BASE_DIR / "failure_type_predicted_xgb.pkl")
 failure_type_le = joblib.load(BASE_DIR / "failure_type_label_encoder.pkl")
 
-def predict_failure_type(feature_dict: dict) -> str:
+def predict_failure_type(X) -> str:
     """
     Predict the recommended action for a single asset feature dictionary.
     
@@ -127,8 +127,6 @@ def predict_failure_type(feature_dict: dict) -> str:
         str: predicted recommended action (decoded from label encoder)
     """
     # Build feature vector in correct order (as a 2D array for XGBoost)
-    X = [build_feature_vector(feature_dict)]
-    
     # Predict and decode
     failure_type_idx = int(failure_type_model.predict(X)[0])
     return failure_type_le.inverse_transform([failure_type_idx])[0]

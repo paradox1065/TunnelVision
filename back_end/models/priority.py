@@ -106,7 +106,7 @@ BASE_DIR = Path(__file__).parent
 priority_model = joblib.load(BASE_DIR / "recommended_priority_rfr.pkl")
 priority_le = joblib.load(BASE_DIR / "recommended_priority_features.pkl")
 
-def predict_priority(feature_dict: dict) -> str:
+def predict_priority(X) -> str:
     """
     Predict the recommended action for a single asset feature dictionary.
     
@@ -117,9 +117,6 @@ def predict_priority(feature_dict: dict) -> str:
         str: predicted recommended action (decoded from label encoder)
     """
     # Build feature vector in correct order (as a 2D array for XGBoost)
-    X = [build_feature_vector(feature_dict)]
-    
-    # Predict and decode
     priority_idx = int(priority_model.predict(X)[0])
     return priority_le.inverse_transform([priority_idx])[0]
 

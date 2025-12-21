@@ -5,17 +5,21 @@ from back_end.models.failure_type import predict_failure_type
 from back_end.models.priority import predict_priority
 from back_end.models.risk_score import predict_risk_score
 from back_end.models.preprocessing import build_features_for_inference
+from .preprocessing import preprocess_df
+import joblib
 import requests
 
 BASE_DIR = Path(__file__).parent
 
-def predict_all(feature_dict: dict):
+FEATURE_COLS = joblib.load("back_end/feature_cols.pkl")
+
+def predict_all(X):
     return {
-        "failure_in_30_days": predict_failure_30d(feature_dict),
-        "failure_type": predict_failure_type(feature_dict),
-        "risk_score": predict_risk_score(feature_dict),
-        "recommended_action": predict_action(feature_dict),
-        "priority": predict_priority(feature_dict),
+        "failure_in_30_days": predict_failure_30d(X),
+        "failure_type": predict_failure_type(X),
+        "risk_score": predict_risk_score(X),
+        "recommended_action": predict_action(X),
+        "priority": predict_priority(X),
     }
 
 

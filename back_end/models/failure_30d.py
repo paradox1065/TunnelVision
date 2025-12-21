@@ -109,7 +109,7 @@ BASE_DIR = Path(__file__).parent
 failure_30d_model = joblib.load(BASE_DIR / "failure_30d_rfc.pkl")
 failure_30d_le = joblib.load(BASE_DIR / "failure_30d_features.pkl")
 
-def predict_failure_30d(feature_dict: dict) -> str:
+def predict_failure_30d(X) -> str:
     """
     Predict the recommended action for a single asset feature dictionary.
     
@@ -120,8 +120,6 @@ def predict_failure_30d(feature_dict: dict) -> str:
         str: predicted recommended action (decoded from label encoder)
     """
     # Build feature vector in correct order (as a 2D array for XGBoost)
-    X = [build_feature_vector(feature_dict)]
-    
     # Predict and decode
     failure_30d_idx = int(failure_30d_model.predict(X)[0])
     return failure_30d_le.inverse_transform([failure_30d_idx])[0]

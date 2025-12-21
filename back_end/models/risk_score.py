@@ -106,7 +106,7 @@ BASE_DIR = Path(__file__).parent
 risk_score_model = joblib.load(BASE_DIR / "risk_score_gbr.pkl")
 risk_score_le = joblib.load(BASE_DIR / "risk_score_features.pkl")
 
-def predict_risk_score(feature_dict: dict) -> str:
+def predict_risk_score(X) -> str:
     """
     Predict the recommended action for a single asset feature dictionary.
     
@@ -116,10 +116,6 @@ def predict_risk_score(feature_dict: dict) -> str:
     Returns:
         str: predicted recommended action (decoded from label encoder)
     """
-    # Build feature vector in correct order (as a 2D array for XGBoost)
-    X = [build_feature_vector(feature_dict)]
-    
-    # Predict and decode
     risk_score_idx = int(risk_score_model.predict(X)[0])
     return risk_score_le.inverse_transform([risk_score_idx])[0]
 

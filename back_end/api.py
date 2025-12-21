@@ -4,7 +4,7 @@ from pydantic import BaseModel, model_validator
 from typing import Optional, Tuple
 from datetime import date
 
-from .model_utils import predict_all, get_location_from_region, get_temperature, get_region_from_location, get_traffic_from_region
+from .model_utils import predict_all, get_location_from_region, get_temperature, get_region_from_location, get_traffic_from_region, FEATURE_COLS
 
 app = FastAPI()
 
@@ -85,6 +85,12 @@ def predict(data: PredictionRequest):
         "install_year": data.install_year,
         "length_m": data.length_m,
     }
+    df = pd.DataFrame([feature_dict])
+    df_processed = preprocess_df(df)
 
+    # align columns EXACTLY
+    df_processed = df_processed.reindex(columns=FEATURE_COLS, fill_value=0)
+
+    X = df_processed.values
     # Predict all outputs using the unified pipeline
-    return predict_all(feature_dict)
+    return predict_all(X)
