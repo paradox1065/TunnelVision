@@ -85,12 +85,16 @@ def predict(data: PredictionRequest):
         "install_year": data.install_year,
         "length_m": data.length_m,
     }
+
+    # Convert to DataFrame
     df = pd.DataFrame([feature_dict])
+
+    # Preprocess
     df_processed = preprocess_df(df)
 
-    # align columns EXACTLY
+    # Align columns exactly
     df_processed = df_processed.reindex(columns=FEATURE_COLS, fill_value=0)
 
-    X = df_processed.values
-    # Predict all outputs using the unified pipeline
-    return predict_all(X)
+    # ✅ Pass the DataFrame (not .values) to predict_all
+    return predict_all(df_processed)
+
