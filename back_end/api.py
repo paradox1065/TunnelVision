@@ -48,9 +48,14 @@ class PredictionResponse(BaseModel):
 # -------------------------
 @app.post("/predict", response_model=PredictionResponse)
 def predict(data: PredictionRequest):
-    # Determine latitude/longitude
-    lat, lon = data.exact_location or get_location_from_region(data.region)
-    region = data.region or get_region_from_location(lat, lon)
+
+    if data.exact_location is not None:
+        lat, lon = data.exact_location
+        region = data.region or get_region_from_location(lat, lon)
+    else:
+        # exact_location missing → derive from region
+        lat, lon = get_location_from_region(data.region)
+        region = data.region
     traffic = get_traffic_from_region(region)
     temperature_c = get_temperature(lat, lon)
 
