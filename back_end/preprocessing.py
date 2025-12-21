@@ -52,5 +52,7 @@ def preprocess_df(df: pd.DataFrame) -> pd.DataFrame:
     # Cleanup
     # -------------------------
     df = df.replace([np.inf, -np.inf], np.nan).fillna(0)
+    # Drop raw datetime columns before returning
+    df = df.drop(columns=["snapshot_date", "last_repair_date"], errors="ignore")
 
     return df

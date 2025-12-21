@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, model_validator
 from typing import Optional, Tuple
 from datetime import date
-
+import pandas as pd
+from .preprocessing import preprocess_df
 from .model_utils import predict_all, get_location_from_region, get_temperature, get_region_from_location, get_traffic_from_region, FEATURE_COLS
 
 app = FastAPI()
@@ -49,52 +50,51 @@ class PredictionResponse(BaseModel):
 @app.post("/predict", response_model=PredictionResponse)
 def predict(data: PredictionRequest):
 
+    # 1️⃣ Determine location & region
     if data.exact_location is not None:
         lat, lon = data.exact_location
         region = data.region or get_region_from_location(lat, lon)
     else:
-        # exact_location missing → derive from region
         lat, lon = get_location_from_region(data.region)
         region = data.region
+
     traffic = get_traffic_from_region(region)
     temperature_c = get_temperature(lat, lon)
-
     snapshot_date = data.snapshot_date or date.today().strftime("%Y-%m-%d")
 
-    # Build full feature dictionary (matches training expectations)
+    # 2️⃣ Build feature dictionary
     feature_dict = {
         "type": data.type,
         "material": data.material,
         "region": region,
         "soil_type": data.soil_type,
         "traffic": traffic,
-
         "latitude": lat,
         "longitude": lon,
         "avg_temp_c": temperature_c,
-
-        # Safe defaults for environmental + history features
         "rainfall_mm": 20.0,
         "soil_moisture_pc": 30.0,
         "slope_grade": 2.0,
         "num_prev_failures": 0,
         "failures_prev": 0,
-
         "last_repair_date": data.last_repair_date,
         "snapshot_date": snapshot_date,
         "install_year": data.install_year,
         "length_m": data.length_m,
     }
 
-    # Convert to DataFrame
     df = pd.DataFrame([feature_dict])
 
-    # Preprocess
+    # 3️⃣ Preprocess
     df_processed = preprocess_df(df)
 
-    # Align columns exactly
+    # 4️⃣ Drop raw datetime columns (to avoid dtype issues)
+    df_processed = df_processed.drop(columns=["snapshot_date", "last_repair_date"], errors="ignore")
+
+    # 5️⃣ Align to training features
     df_processed = df_processed.reindex(columns=FEATURE_COLS, fill_value=0)
 
-    # Pass the DataFrame (not .values) to predict_all
+    # ✅ 6️⃣ Pass to unified prediction function
     return predict_all(df_processed)
+
 
