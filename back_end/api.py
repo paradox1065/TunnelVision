@@ -95,6 +95,6 @@ def predict(data: PredictionRequest):
     # Align columns exactly
     df_processed = df_processed.reindex(columns=FEATURE_COLS, fill_value=0)
 
-    # ✅ Pass the DataFrame (not .values) to predict_all
+    # Pass the DataFrame (not .values) to predict_all
     return predict_all(df_processed)
 
