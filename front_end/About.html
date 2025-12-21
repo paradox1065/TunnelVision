@@ -1,90 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About</title>
+  <title>About — TunnelVision</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!--<script src="get_user_location.js"></script>-->
+  <header class="site-header">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" class="logo" aria-hidden="true"><defs><linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#g3)"/><path d="M6 16L10 8l4 8" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      <h1 class="site-title">TunnelVision</h1>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html">Home</a>
+      <a href="About.html" class="active">About</a>
+      <a href="Form.html">Form</a>
+    </nav>
+  </header>
 
-   <div class="tabs">
-    <a href="index.html">Home</a>
-    <a href="about.html" class="active-tab">About</a>
-    <a href="Form.html">Form</a>
-  </div>
+  <body class="about-page">
 
-  <div class="content">
-  <h1>TunnelVision</h1>
-  <h2>AI for Predictive Maintenance</h2>
-  <p>AI is used to predict when infrastructure, like water pipes, will need maintenance before they occur.</p>
-    <h2>Key Features</h2>
-    <ul>
-        <li>When specific parts of a house or infrastructure are likely to fail, the AI model can alert homeowners or maintenance teams in advance.</li>
-        <li>By analyzing historical data on repairs and failures, the AI can identify patterns and predict future issues.</li>
-        <li>This proactive approach helps in scheduling maintenance during convenient times, minimizing disruption and costs.</li>
-    </ul>
-   <h2>What It Does</h2>
-    <ul>
-        <li>Predicts Remaining Useful Life (RUL) of each asset</li>
-        <li>Sends early failure alerts (next 30 days)</li>
-        <li>Generates a 0–100 risk score</li>
-        <li>Recommends maintenance actions & priorities</li>
-        <li>Visualizes asset health across the city</li>
-    </ul>
-   <h2>How it Works</h2>
-   <h3>1️⃣ Realistic Synthetic City Data</h3>
-    <ul>
-        <li>We built a dataset modeled after Cupertino infrastructure using 20+ engineered features:</li>
-        <li>Asset age, material, soil type</li>
-        <li>Rainfall, temperature, traffic</li>
-        <li>Previous failures & repair history</li>
-        <li>Seasonal patterns (ex: storms → storm drain failures)</li>
-    </ul>
-    <h3>2️⃣ Machine Learning Models</h3>
-    <h4>TunnelVision predicts:</h4>
-    <ul>
-        <li>RUL (regression)</li>
-        <li>Failure probability (classification)</li>
-    </ul>
-    <h4>Models used:</h4>
-    <ul>
-        <li>Random Forest</li>
-        <li>XGBoost</li>
-        <li>Gradient Boosting</li>
-    </ul>
-    <h3>3️⃣ Risk Score (0–100)</h3>
-    <h4>Weighted by:</h4>
-    <table border = "1">
-        <tr>
-            <th>Factor</th>
-            <th>Weight</th>
-        </tr>
-        <tr>
-            <td>RUL</td>
-            <td>40%</td>
-        </tr>
-        <tr>
-            <td>Failure Probability</td>
-            <td>30%</td>
-        </tr>
-        <tr>
-            <td>Asset Criticality</td>  
-            <td>20%</td>
-        </tr>
-        <tr>
-            <td>Model Uncertainty</td>
-            <td>10%</td>
-        </tr>
-    </table>  
-    <h3>4️⃣ Recommendations</h3>
-    <h4>The system outputs:</h4>
-    <ul>
-        <li>Maintenance priority</li>
-        <li>Predicted failure type</li>
-        <li>Urgency level</li>
-    </ul> 
-  </div>
+  <main class="main-grid">
+    <section class="hero">
+      <div class="hero-inner">
+        <h2>AI for Predictive Maintenance</h2>
+        <p>We predict faults before they happen so maintenance teams can act early and cost-effectively.</p>
+      </div>
+      <div class="accent" aria-hidden="true"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-inner">
+        <h3 class="panel-heading">What TunnelVision does</h3>
+        <p class="panel-lead">We turn a few simple inputs into a clear risk score and a recommended next step so teams can act before failures occur.</p>
+
+        <div class="card-row">
+          <div class="card">
+            <h4>Key Features</h4>
+            <ul class="about-list">
+              <li>30‑day failure forecast per asset</li>
+              <li>Risk score (0–100) and priority levels</li>
+              <li>Actionable recommended interventions</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h4>How it works</h4>
+            <ol class="about-list">
+              <li><strong>Data</strong> — asset metadata plus environment and usage features</li>
+              <li><strong>Models</strong> — ensemble models produce probabilities and RUL estimates</li>
+              <li><strong>Insights</strong> — concise recommendations and priority for operations</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="transparency" style="width:100%;margin-top:14px">
+          <h4 style="margin-bottom:8px">Risk score breakdown</h4>
+          <table class="table">
+            <thead>
+              <tr><th>Factor</th><th>Weight</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>RUL</td><td>40%</td></tr>
+              <tr><td>Failure Probability</td><td>30%</td></tr>
+              <tr><td>Asset Criticality</td><td>20%</td></tr>
+              <tr><td>Model Uncertainty</td><td>10%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap">
+          <a class="primary" href="Form.html">Try a Prediction</a>
+          <a class="ghost" href="index.html">Return home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>© TunnelVision • Built for clarity and impact</small>
+  </footer>
 </body>
 </html>

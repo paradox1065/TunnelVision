@@ -3,106 +3,202 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Form</title>
+  <title>TunnelVision — Predictive Asset Insights</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
-  <div class="tabs">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="Form.html" class="active-tab">Form</a>
-  </div>
+<body class="form-page">
+  <header class="site-header">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" class="logo" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#g)"/><path d="M6 16L10 8l4 8" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      <h1 class="site-title">TunnelVision</h1>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html">Home</a>
+      <a href="About.html">About</a>
+      <a href="Form.html" class="active">Form</a>
+    </nav>
+  </header>
 
-  <div class="content">
-    <h1>TunnelVision Asset Prediction</h1>
-    <p style="text-align:center; margin-bottom:30px;">
-      Enter the asset details below to see predictive maintenance insights.
-    </p>
+  <main class="main-grid">
+    <section class="hero">
+      <div class="hero-inner">
+        <!-- Hero intentionally minimal on Form page; the form itself is the focus -->
+      </div>
+      <div class="accent" aria-hidden="true"></div>
+    </section>
 
-    <form class="asset-form" id="assetForm" novalidate>
-      <h2>Asset Information</h2>
+    <section class="panel panel-form">
+      <div class="form-layout">
+        <aside class="side-card" aria-hidden="false">
+          <h2 class="side-title">Predict failures before they happen</h2>
+          <p class="side-lead muted">Enter a handful of asset details and get a clear risk score and recommended action in seconds.</p>
+          <ul class="side-list muted">
+            <li>Fast: results in seconds</li>
+            <li>Clear: single risk score (0–100)</li>
+            <li>Actionable: recommended next step</li>
+          </ul>
+        </aside>
 
-      <label for="type">Type *</label>
-      <select id="type" required>
-        <option value="">Select type</option>
-        <option>Bridge</option>
-        <option>Electrical Conduit</option>
-        <option>Gas Line</option>
-        <option>Road</option>
-        <option>Sewer Pipe</option>
-        <option>Water Pipe</option>
-        <option>Storm Drain</option>
-      </select>
+        <div class="form-card">
+        <form class="asset-form" id="assetForm" novalidate aria-labelledby="formTitle">
+          <div class="form-head">
+            <h3 id="formTitle">Asset Information</h3>
+            <p class="muted">Fields marked with * are required</p>
+          </div>
 
-      <label for="material">Material *</label>
-      <select id="material" required>
-        <option value="">Select material</option>
-        <option>PVC</option>
-        <option>Aluminum</option>
-        <option>Asphalt</option>
-        <option>Cast Iron</option>
-        <option>Clay</option>
-        <option>Composite</option>
-        <option>Concrete</option>
-        <option>Copper</option>
-        <option>Corrugated Metal</option>
-        <option>Ductile Iron</option>
-        <option>Polyethylene</option>
-        <option>Steel</option>
-      </select>
+          <div class="grid two">
+            <label class="field">
+              <span class="label">Type *</span>
+              <select id="type" required>
+                <option value="">Select type</option>
+                <option>Bridge</option>
+                <option>Electrical Conduit</option>
+                <option>Gas Line</option>
+                <option>Road</option>
+                <option>Sewer Pipe</option>
+                <option>Water Pipe</option>
+                <option>Storm Drain</option>
+              </select>
+            </label>
 
-      <label for="region">Region (optional if using location)</label>
-      <select id="region">
-        <option value="">Select region</option>
-        <option>Napa</option>
-        <option>Santa Clara</option>
-        <option>Marin</option>
-        <option>San Francisco</option>
-        <option>Alameda</option>
-        <option>San Mateo</option>
-        <option>Contra Costa</option>
-        <option>Solano</option>
-        <option>Sonoma</option>
-      </select>
+            <label class="field">
+              <span class="label">Material *</span>
+              <select id="material" required>
+                <option value="">Select material</option>
+                <option>PVC</option>
+                <option>Aluminum</option>
+                <option>Asphalt</option>
+                <option>Cast Iron</option>
+                <option>Clay</option>
+                <option>Composite</option>
+                <option>Concrete</option>
+                <option>Copper</option>
+                <option>Corrugated Metal</option>
+                <option>Ductile Iron</option>
+                <option>Polyethylene</option>
+                <option>Steel</option>
+              </select>
+            </label>
+          </div>
 
-      <label for="soil_type">Soil Type *</label>
-      <select id="soil_type" required>
-        <option value="">Select soil type</option>
-        <option>Bedrock</option>
-        <option>Clay</option>
-        <option>Fill</option>
-        <option>Gravel</option>
-        <option>Sand</option>
-        <option>Silt</option>
-        <option>Loam</option>
-      </select>
+          <div class="grid two">
+            <label class="field">
+              <span class="label">Region</span>
+              <select id="region">
+                <option value="">Select region</option>
+                <option>Napa</option>
+                <option>Santa Clara</option>
+                <option>Marin</option>
+                <option>San Francisco</option>
+                <option>Alameda</option>
+                <option>San Mateo</option>
+                <option>Contra Costa</option>
+                <option>Solano</option>
+                <option>Sonoma</option>
+              </select>
+            </label>
 
-      <label for="latitude">Latitude</label>
-      <input id="latitude" type="number" step="0.000001" min="-90" max="90" placeholder="e.g. 37.7749" />
+            <label class="field">
+              <span class="label">Soil Type *</span>
+              <select id="soil_type" required>
+                <option value="">Select soil type</option>
+                <option>Bedrock</option>
+                <option>Clay</option>
+                <option>Fill</option>
+                <option>Gravel</option>
+                <option>Sand</option>
+                <option>Silt</option>
+                <option>Loam</option>
+              </select>
+            </label>
+          </div>
 
-      <label for="longitude">Longitude</label>
-      <input id="longitude" type="number" step="0.000001" min="-180" max="180" placeholder="e.g. -122.4194" />
+          <div class="grid two">
+            <label class="field">
+              <span class="label">Latitude</span>
+              <input id="latitude" type="number" step="0.000001" min="-90" max="90" placeholder="e.g. 37.7749" />
+            </label>
 
-      <button type="button" onclick="getLocation()">Use My Current Location</button>
+            <label class="field">
+              <span class="label">Longitude</span>
+              <input id="longitude" type="number" step="0.000001" min="-180" max="180" placeholder="e.g. -122.4194" />
+            </label>
+          </div>
 
-      <label for="last_repair">Date of Last Repair *</label>
-      <input type="date" id="last_repair" required />
+          <div class="actions-row">
+            <button type="button" class="ghost" id="locBtn" onclick="getLocation()">Use My Current Location</button>
+            <small class="muted">Optional if using region</small>
+          </div>
 
-      <label for="snapshot_date">Date Asset Was Observed *</label>
-      <input type="date" id="snapshot_date" required />
+          <div class="grid two">
+            <label class="field">
+              <span class="label">Date of Last Repair *</span>
+              <input type="date" id="last_repair" required />
+            </label>
 
-      <label for="install_year">Install Year *</label>
-      <input type="number" id="install_year" min="1900" max="2100" required />
+            <label class="field">
+              <span class="label">Date Observed *</span>
+              <input type="date" id="snapshot_date" required />
+            </label>
+          </div>
 
-      <label for="length_m">Length (meters)</label>
-      <input type="number" id="length_m" step="0.01" />
-      <small>Optional, enter in meters</small>
+          <div class="grid two">
+            <label class="field">
+              <span class="label">Install Year *</span>
+              <input type="number" id="install_year" min="1900" max="2100" required />
+            </label>
 
-      <button type="submit">Submit</button>
-    </form>
+            <label class="field">
+              <span class="label">Length (m)</span>
+              <input type="number" id="length_m" step="0.01" placeholder="Optional" />
+            </label>
+          </div>
 
-    <div id="results"></div>
-  </div>
+          <div class="submit-row">
+            <button type="submit" id="submitBtn" class="primary">
+              <span class="btn-text">Analyze</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+
+        <aside class="result-area" aria-live="polite">
+          <div id="resultsCard" class="results-card" hidden>
+            <div class="results-head">
+              <h4>🔍 Prediction</h4>
+              <div id="failureBadge" class="badge"></div>
+            </div>
+
+            <div class="results-body">
+              <div class="score-ring" id="scoreRing" aria-hidden="true"></div>
+              <div class="result-details">
+                <p><strong>Risk Score:</strong> <span id="riskScore">—</span>/100</p>
+                <p><strong>Priority:</strong> <span id="priority">—</span></p>
+                <p><strong>Failure Type:</strong> <span id="failureType">—</span></p>
+                <p><strong>Recommended Action:</strong> <span id="recommendedAction">—</span></p>
+              </div>
+            </div>
+
+            <div class="results-footer">
+              <button id="resetView" class="ghost small">New Analysis</button>
+            </div>
+          </div>
+
+          <div id="resultsPlaceholder" class="placeholder">
+            <p class="muted">Submit the form to see the AI prediction</p>
+          </div>
+        </aside>
+        </div> <!-- .form-card -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>© TunnelVision • Built for clarity and impact</small>
+  </footer>
 
   <script>
     // Default snapshot date = today

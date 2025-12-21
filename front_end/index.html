@@ -1,31 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TunnelVision – Home</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
+<body class="home">
+  <header class="site-header">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" class="logo" aria-hidden="true"><defs><linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#g2)"/><path d="M6 16L10 8l4 8" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      <h1 class="site-title">TunnelVision</h1>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="About.html">About</a>
+      <a href="Form.html">Form</a>
+    </nav>
+  </header>
 
-<body>
-<!--<script src="get_user_location.js"></script>-->
+<section class="hero hero--full">
+    <div class="hero-inner">
+      <div class="brand-hero" aria-hidden="false">
+        <svg viewBox="0 0 48 48" class="logo-hero" aria-hidden="true"><defs><linearGradient id="g-hero" x1="0" x2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs><rect width="48" height="48" rx="10" fill="url(#g-hero)"/><path d="M12 32L20 16l8 16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <h1 class="hero-title">TunnelVision</h1>
+      </div>
+    </div>
+    <div class="accent" aria-hidden="true"></div>
+  </section>
 
-  <!-- Navigation Tabs -->
-  <div class="tabs">
-    <a href="index.html" class="active-tab">Home</a>
-    <a href="about.html">About</a>
-    <a href="Form.html">Form</a>
-  </div>
+  <main class="main-grid">
+    <section class="panel panel-compact">
+      <h2 class="panel-title">Predict failures before they happen</h2>
+      <p class="panel-text">TunnelVision converts a few simple inputs into an actionable risk score and a clear next step. Fast. Clear. Easy to act on.</p>
+      <div style="margin-top:18px;display:flex;gap:12px;justify-content:center">
+        <a class="primary" href="Form.html">Take a Prediction</a>
+        <a class="ghost" href="About.html">Learn more</a>
+      </div>
+    </section> 
+  </main>
 
-  <!-- Main Home Section -->
-  <div class="hero">
-    <h1>TunnelVision</h1>
-    <p>
-      AI-powered predictive maintenance designed to prevent failures before they happen.
-    </p>
-  </div>
-
+  <footer class="site-footer">
+    <small>© TunnelVision • Built for clarity and impact</small>
+  </footer>
 </body>
 </html>
-
 
