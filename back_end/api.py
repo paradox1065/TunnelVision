@@ -71,7 +71,7 @@ def predict(data: PredictionRequest):
 
         "latitude": lat,
         "longitude": lon,
-        "temperature_c": temperature_c,
+        "avg_temp_c": temperature_c,
 
         # Safe defaults for environmental + history features
         "rainfall_mm": 20.0,
