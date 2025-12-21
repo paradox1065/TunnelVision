@@ -1,6 +1,7 @@
 # model that determines the type of failure based on equipment features
 # model that determines the type of failure based on equipment features
 import os
+import pandas as pd
 import numpy as np
 from .train import build_features as bf
 from sklearn.preprocessing import LabelEncoder as le
@@ -107,7 +108,6 @@ joblib.dump(
 
 
 from pathlib import Path
-from back_end.features_schema import build_feature_vector  # existing function from your code
 
 # --- Paths ---
 BASE_DIR = Path(__file__).parent
@@ -116,18 +116,9 @@ BASE_DIR = Path(__file__).parent
 failure_type_model = joblib.load(BASE_DIR / "failure_type_predicted_xgb.pkl")
 failure_type_le = joblib.load(BASE_DIR / "failure_type_label_encoder.pkl")
 
-def predict_failure_type(X) -> str:
-    """
-    Predict the recommended action for a single asset feature dictionary.
-    
-    Args:
-        feature_dict (dict): dictionary containing feature names and values.
-        
-    Returns:
-        str: predicted recommended action (decoded from label encoder)
-    """
-    # Build feature vector in correct order (as a 2D array for XGBoost)
-    # Predict and decode
-    failure_type_idx = int(failure_type_model.predict(X)[0])
-    return failure_type_le.inverse_transform([failure_type_idx])[0]
+def predict_failure_type(X: pd.DataFrame) -> str:
+    expected_features = joblib.load(BASE_DIR / "failure_type_features.pkl")
+    X_aligned = X.reindex(columns=expected_features, fill_value=0)
+    prediction_idx = failure_type_model.predict(X_aligned)[0]
+    return failure_type_le.inverse_transform([prediction_idx])[0]  # ← USE THE LABEL ENCODER
 

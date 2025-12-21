@@ -97,27 +97,17 @@ joblib.dump(
 
 
 from pathlib import Path
-from back_end.features_schema import build_feature_vector  # existing function from your code
 
 # --- Paths ---
 BASE_DIR = Path(__file__).parent
 
-# --- Load trained model + label encoder ---
+# --- Load trained model ---
 priority_model = joblib.load(BASE_DIR / "recommended_priority_rfr.pkl")
-priority_le = joblib.load(BASE_DIR / "recommended_priority_features.pkl")
 
-def predict_priority(X) -> str:
-    """
-    Predict the recommended action for a single asset feature dictionary.
-    
-    Args:
-        feature_dict (dict): dictionary containing feature names and values.
-        
-    Returns:
-        str: predicted recommended action (decoded from label encoder)
-    """
-    # Build feature vector in correct order (as a 2D array for XGBoost)
-    priority_idx = int(priority_model.predict(X)[0])
-    return priority_le.inverse_transform([priority_idx])[0]
+def predict_priority(X: pd.DataFrame) -> int:
+    expected_features = joblib.load(BASE_DIR / "recommended_priority_features.pkl")  # ← CHANGE THIS
+    X_aligned = X.reindex(columns=expected_features, fill_value=0)
+    priority = priority_model.predict(X_aligned)[0]
+    return int(priority)
 
 

@@ -1,6 +1,7 @@
 # model that determines recommended actions based on equipment features
 import os
 import numpy as np
+import pandas as pd
 from .train import build_features as bf
 from sklearn.preprocessing import LabelEncoder as le
 from sklearn.model_selection import train_test_split
@@ -78,7 +79,6 @@ joblib.dump(
 
 
 from pathlib import Path
-from back_end.features_schema import build_feature_vector  # existing function from your code
 
 # --- Paths ---
 BASE_DIR = Path(__file__).parent
@@ -87,18 +87,10 @@ BASE_DIR = Path(__file__).parent
 action_model = joblib.load(BASE_DIR / "recommended_action_xgb.pkl")
 action_le = joblib.load(BASE_DIR / "recommended_action_label_encoder.pkl")
 
-def predict_action(X) -> str:
-    """
-    Predict the recommended action for a single asset feature dictionary.
-    
-    Args:
-        feature_dict (dict): dictionary containing feature names and values.
-        
-    Returns:
-        str: predicted recommended action (decoded from label encoder)
-    """
-    # Build feature vector in correct order (as a 2D array for XGBoost)
-    action_idx = int(action_model.predict(X)[0])
+def predict_action(X: pd.DataFrame) -> str:
+    expected_features = joblib.load(BASE_DIR / "recommended_action_features.pkl")
+    X_aligned = X.reindex(columns=expected_features, fill_value=0)
+    action_idx = action_model.predict(X_aligned)[0]
     return action_le.inverse_transform([action_idx])[0]
 
 

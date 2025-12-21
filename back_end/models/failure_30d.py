@@ -30,6 +30,15 @@ test_assets = asset_ids[split_idx:]
 train_mask = df["asset_id"].isin(train_assets)
 test_mask = df["asset_id"].isin(test_assets)
 
+# *** SAVE FEATURE NAMES BEFORE CONVERTING TO SPARSE MATRIX ***
+model_dir = os.path.join(script_dir, "../models")
+os.makedirs(model_dir, exist_ok=True)
+
+joblib.dump(
+    feature_cols,
+    os.path.join(model_dir, "failure_30d_features.pkl")
+)
+
 # --- Convert to CSR so we can index properly ---
 X = csr_matrix(X)
 
@@ -71,19 +80,11 @@ print("\n\n\n")
 # -------------------------
 # Save model + metadata
 # -------------------------
-model_dir = os.path.join(script_dir, "../models")
-os.makedirs(model_dir, exist_ok=True)
 
 # Save RandomForest model
 joblib.dump(
     model,
     os.path.join(model_dir, "failure_30d_rfc.pkl")
-)
-
-# Save feature list (important for inference)
-joblib.dump(
-    feature_cols,
-    os.path.join(model_dir, "failure_30d_features.pkl")
 )
 
 # Save metrics
@@ -98,29 +99,26 @@ metrics = {
 with open(os.path.join(model_dir, "failure_30d_metrics.json"), "w") as f:
     json.dump(metrics, f, indent=2)
 
+print("Model and features saved successfully!")
+
+# -------------------------
+# PREDICTION FUNCTION (for API use)
+# -------------------------
 import sys 
 from pathlib import Path
-from back_end.features_schema import build_feature_vector  # existing function from your code
 
 # --- Paths ---
 BASE_DIR = Path(__file__).parent
 
-# --- Load trained model + label encoder ---
+# --- Load trained model ---
 failure_30d_model = joblib.load(BASE_DIR / "failure_30d_rfc.pkl")
-failure_30d_le = joblib.load(BASE_DIR / "failure_30d_features.pkl")
 
-def predict_failure_30d(X) -> str:
+def predict_failure_30d(X: pd.DataFrame) -> bool:
     """
-    Predict the recommended action for a single asset feature dictionary.
-    
-    Args:
-        feature_dict (dict): dictionary containing feature names and values.
-        
-    Returns:
-        str: predicted recommended action (decoded from label encoder)
+    Predict if failure will occur in next 30 days
+    X: preprocessed DataFrame with one row
     """
-    # Build feature vector in correct order (as a 2D array for XGBoost)
-    # Predict and decode
-    failure_30d_idx = int(failure_30d_model.predict(X)[0])
-    return failure_30d_le.inverse_transform([failure_30d_idx])[0]
-
+    expected_features = joblib.load(BASE_DIR / "failure_30d_features.pkl")
+    X_aligned = X.reindex(columns=expected_features, fill_value=0)
+    prediction = failure_30d_model.predict(X_aligned)[0]
+    return bool(prediction)

@@ -1,6 +1,7 @@
 # model that predicts risk_score
 import os
 import numpy as np
+import pandas as pd
 import math
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -97,26 +98,17 @@ joblib.dump(
 
 
 from pathlib import Path
-from back_end.features_schema import build_feature_vector  # existing function from your code
 
 # --- Paths ---
 BASE_DIR = Path(__file__).parent
 
-# --- Load trained model + label encoder ---
+# --- Load trained model ---
 risk_score_model = joblib.load(BASE_DIR / "risk_score_gbr.pkl")
-risk_score_le = joblib.load(BASE_DIR / "risk_score_features.pkl")
 
-def predict_risk_score(X) -> str:
-    """
-    Predict the recommended action for a single asset feature dictionary.
-    
-    Args:
-        feature_dict (dict): dictionary containing feature names and values.
-        
-    Returns:
-        str: predicted recommended action (decoded from label encoder)
-    """
-    risk_score_idx = int(risk_score_model.predict(X)[0])
-    return risk_score_le.inverse_transform([risk_score_idx])[0]
+def predict_risk_score(X: pd.DataFrame) -> int:
+    expected_features = joblib.load(BASE_DIR / "risk_score_features.pkl")
+    X_aligned = X.reindex(columns=expected_features, fill_value=0)
+    score = risk_score_model.predict(X_aligned)[0]
+    return int(score)
 
 
