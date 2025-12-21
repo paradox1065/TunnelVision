@@ -4,16 +4,25 @@ from back_end.models.failure_30d import predict_failure_30d
 from back_end.models.failure_type import predict_failure_type
 from back_end.models.priority import predict_priority
 from back_end.models.risk_score import predict_risk_score
-from back_end.models.preprocessing import build_features_for_inference
 from .preprocessing import preprocess_df
 import joblib
 import requests
+import pandas as pd
 
 BASE_DIR = Path(__file__).parent
 
+# Load the exact feature order used for training
 FEATURE_COLS = joblib.load("back_end/feature_cols.pkl")
 
+
+# -------------------------
+# Unified prediction function
+# -------------------------
 def predict_all(X):
+    """
+    X should be a preprocessed DataFrame (1 row for a single asset) 
+    with columns aligned to FEATURE_COLS.
+    """
     return {
         "failure_in_30_days": predict_failure_30d(X),
         "failure_type": predict_failure_type(X),
@@ -36,8 +45,10 @@ REGION_COORDINATES = {
     "Solano": (38.316, -122.018),
 }
 
+
 def get_location_from_region(region: str) -> tuple[float, float]:
     return REGION_COORDINATES.get(region.strip(), (37.338207, -121.886330))
+
 
 def get_temperature(lat: float, lon: float) -> float:
     try:
@@ -51,7 +62,8 @@ def get_temperature(lat: float, lon: float) -> float:
         return response.json().get("current_weather", {}).get("temperature", 15.0)
     except Exception:
         return 15.0
-    
+
+
 def get_region_from_location(lat: float, lon: float):
     if 36.89238291632208 <= lat <= 37.48534080282651 and -122.20259387759805 <= lon <= -121.21382434174066:
         return "Santa Clara"
@@ -71,7 +83,8 @@ def get_region_from_location(lat: float, lon: float):
         return "San Mateo"
     elif 38.0398174918701 <= lat <= 38.54067561081478 and -122.40928351247523 <= lon <= -121.59217535437085:
         return "Solano"
-    
+
+
 def get_traffic_from_region(region: str) -> str:
     region_traffic = {
         "San Francisco": "high",
