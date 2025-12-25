@@ -8,3 +8,4 @@ pydantic
 joblib
 typing
 requests
+uvicorn
