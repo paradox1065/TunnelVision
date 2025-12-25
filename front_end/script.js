@@ -27,15 +27,9 @@ function formatDate(dateStr) {
   return `${m}-${d}-${y}`;
 }
 
-// Dynamically determine API base URL
+// Updated API base URL - now served from same origin
 function getApiBase() {
-  const hostname = window.location.hostname;
-  const protocol = window.location.protocol;
-  if (hostname.includes('app.github.dev') || hostname.includes('github.dev')) {
-    const apiHostname = hostname.replace('5500', '8000');
-    return `${protocol}//${apiHostname}`;
-  }
-  return 'http://127.0.0.1:8000';
+  return '';  // Empty string = same origin (FastAPI serves everything)
 }
 
 function setLoading(isLoading) {
@@ -77,7 +71,7 @@ async function submitForm(e) {
   try {
     setLoading(true);
     const API_BASE = getApiBase();
-    console.log('🔗 API Base URL:', API_BASE);
+    console.log('🔗 API Base URL:', API_BASE || 'same origin');
 
     const response = await fetch(`${API_BASE}/predict`, {
       method: 'POST',
@@ -182,4 +176,3 @@ window.addEventListener('DOMContentLoaded', function(){
     main.addEventListener('mouseleave', ()=>{accent.style.transform='rotate(16deg)';accent.style.filter='blur(32px)'});
   }
 });
-
