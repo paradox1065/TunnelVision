@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TunnelVision — Predictive Asset Insights</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>TunnelVision – Predictive Asset Insights</title>
+  <link rel="stylesheet" href="/static/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -16,9 +16,9 @@
       <h1 class="site-title">TunnelVision</h1>
     </div>
     <nav class="top-nav">
-      <a href="index.html">Home</a>
-      <a href="About.html">About</a>
-      <a href="Form.html" class="active">Form</a>
+      <a href="/">Home</a>
+      <a href="/About.html">About</a>
+      <a href="/Form.html" class="active">Form</a>
     </nav>
   </header>
 
@@ -175,10 +175,10 @@
             <div class="results-body">
               <div class="score-ring" id="scoreRing" aria-hidden="true"></div>
               <div class="result-details">
-                <p><strong>Risk Score:</strong> <span id="riskScore">—</span>/100</p>
-                <p><strong>Priority:</strong> <span id="priority">—</span></p>
-                <p><strong>Failure Type:</strong> <span id="failureType">—</span></p>
-                <p><strong>Recommended Action:</strong> <span id="recommendedAction">—</span></p>
+                <p><strong>Risk Score:</strong> <span id="riskScore">–</span>/100</p>
+                <p><strong>Priority:</strong> <span id="priority">–</span></p>
+                <p><strong>Failure Type:</strong> <span id="failureType">–</span></p>
+                <p><strong>Recommended Action:</strong> <span id="recommendedAction">–</span></p>
               </div>
             </div>
 
@@ -204,6 +204,6 @@
     // Default snapshot date = today
     document.getElementById("snapshot_date").valueAsDate = new Date();
   </script>
-  <script src="script.js"></script>
+  <script src="/static/script.js"></script>
 </body>
 </html>
