@@ -98,3 +98,17 @@ def predict(data: PredictionRequest):
     return predict_all(df_processed)
 
 
+app.mount("/static", StaticFiles(directory="front_end"), name="static")
+
+# Serve HTML pages
+@app.get("/")
+async def read_index():
+    return FileResponse("front_end/index.html")
+
+@app.get("/About.html")
+async def read_about():
+    return FileResponse("front_end/About.html")
+
+@app.get("/Form.html")
+async def read_form():
+    return FileResponse("front_end/Form.html")
