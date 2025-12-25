@@ -1,0 +1,10 @@
+numpy
+pandas
+xgboost
+scikit-learn
+scipy
+fastapi
+pydantic
+joblib
+typing
+requests
