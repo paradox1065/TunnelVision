@@ -65,6 +65,67 @@ def predict(data: PredictionRequest):
     snapshot_date = data.snapshot_date or date.today().strftime("%Y-%m-%d")
 
     # 2️⃣ Build feature dictionary
+        # Material degradation factors
+    material_risk = {
+        "cast_iron": 1.5,
+        "concrete": 1.3,
+        "steel": 1.2,
+        "pvc": 0.7,
+        "hdpe": 0.6,
+    }
+    mat_factor = material_risk.get(data.material.lower(), 1.0)
+
+    # Soil corrosion factors
+    soil_risk = {
+        "clay": 1.4,
+        "sandy": 1.1,
+        "loam": 1.0,
+        "rocky": 0.9,
+    }
+    soil_factor = soil_risk.get(data.soil_type.lower(), 1.0)
+
+    # Quick estimate of asset age for failure calculation
+    asset_age = date.today().year - data.install_year
+    days_since_repair = (date.today() - pd.to_datetime(data.last_repair_date)).days
+
+    # Estimate failures based on age, material, and repair history
+    # Training data mean = 9, so scale to that
+    base_failures = 0
+
+    if asset_age > 50:
+        base_failures = int(12 + mat_factor * 3 + soil_factor * 2)
+    elif asset_age > 40:
+        base_failures = int(9 + mat_factor * 2 + soil_factor * 1)
+    elif asset_age > 30:
+        base_failures = int(6 + mat_factor * 1.5)
+    elif asset_age > 20:
+        base_failures = int(3 + mat_factor)
+    elif asset_age > 10:
+        base_failures = int(1 + mat_factor * 0.5)
+    else:
+        base_failures = 0
+
+    # Add more if repair history is bad
+    if days_since_repair > 365 * 7:
+        base_failures += 3
+    elif days_since_repair > 365 * 5:
+        base_failures += 2
+    elif days_since_repair > 365 * 3:
+        base_failures += 1
+
+    # High traffic + problematic soil = more failures
+    if traffic == "high" and soil_factor > 1.2:
+        base_failures += 2
+
+    # Cap at 18 (max in training data)
+    base_failures = min(base_failures, 18)
+
+    # Environmental stress based on region
+    rainfall = 30.0 if region in ["San Francisco", "Marin", "Sonoma"] else 20.0
+    soil_moisture = 45.0 if data.soil_type.lower() == "clay" else 30.0
+    slope = 4.0 if region in ["San Francisco", "Marin"] else 2.0
+
+    # Build feature dictionary with SMART defaults
     feature_dict = {
         "type": data.type,
         "material": data.material,
@@ -74,11 +135,11 @@ def predict(data: PredictionRequest):
         "latitude": lat,
         "longitude": lon,
         "avg_temp_c": temperature_c,
-        "rainfall_mm": 20.0,
-        "soil_moisture_pc": 30.0,
-        "slope_grade": 2.0,
-        "num_prev_failures": 0,
-        "failures_prev": 0,
+        "rainfall_mm": rainfall,
+        "soil_moisture_pc": soil_moisture,
+        "slope_grade": slope,
+        "num_prev_failures": base_failures,
+        "failures_prev": base_failures,
         "last_repair_date": data.last_repair_date,
         "snapshot_date": snapshot_date,
         "install_year": data.install_year,
