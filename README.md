@@ -140,13 +140,14 @@ TunnelVision enables a **proactive approach**, helping reduce:
 ## 🛠️ Tech Stack
 
 ### **Backend**
-- **Python 3** - Language used for the entirety of back-end
+- **Python 3**
 - **FastAPI** - Modern Python web framework
 - **Pandas & NumPy** - Data processing
 - **Scikit-learn** - Random Forest models
 - **XGBoost & Gradient Boosting** - Ensemble methods
 
 ### **Frontend**
+- **HTML**
 - **Vanilla JavaScript** - No framework overhead
 - **Modern CSS** - Glassmorphism design
 - **Responsive Design** - Mobile-friendly
