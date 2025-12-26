@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, model_validator
 from typing import Optional, Tuple
 from datetime import date
+from datetime import datetime
 import pandas as pd
 from .preprocessing import preprocess_df
 from .model_utils import predict_all, get_location_from_region, get_temperature, get_region_from_location, get_traffic_from_region, FEATURE_COLS
@@ -85,8 +86,8 @@ def predict(data: PredictionRequest):
     soil_factor = soil_risk.get(data.soil_type.lower(), 1.0)
 
     # Quick estimate of asset age for failure calculation
-    asset_age = date.today().year - data.install_year
-    days_since_repair = (date.today() - pd.to_datetime(data.last_repair_date)).days
+    asset_age = datetime.now().year - data.install_year
+    days_since_repair = (datetime.now() - pd.to_datetime(data.last_repair_date)).days   
 
     # Estimate failures based on age, material, and repair history
     # Training data mean = 9, so scale to that
