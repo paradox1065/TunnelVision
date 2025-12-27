@@ -45,10 +45,17 @@ cd tunnelvision
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the server
+# Run the API
 uvicorn back_end.api:app --host 0.0.0.0 --port 8000
+
+Open a new terminal
+
+# Run the server
+python -m http.server 5500
 ```
-Then open your browser to `http://localhost:8000`
+Make sure that both ports (8000 and 5500) are public. 
+Wait until the API terminal says `Application startup complete` before entering port 5500.
+Open port 5500 and click on the `front_end` directory. This will lead you to the website.
 
 ---
 
