@@ -14,11 +14,26 @@ BASE_DIR = Path(__file__).parent
 # Load the exact feature order used for training
 FEATURE_COLS = joblib.load("back_end/feature_cols.pkl")
 
+def calculate_priority_from_risk(risk: int) -> int:
+    """Calculate priority from risk score using rules"""
+    if risk >= 80:
+        return 5
+    elif risk >= 65:
+        return 4
+    elif risk >= 45:
+        return 3
+    elif risk >= 25:
+        return 2
+    else:
+        return 1
 
 # -------------------------
 # Unified prediction function
 # -------------------------
 def predict_all(X):
+
+    risk = int(predict_risk_score(X))  # calculate risk first
+
     """
     X should be a preprocessed DataFrame (1 row for a single asset) 
     with columns aligned to FEATURE_COLS.
@@ -26,9 +41,9 @@ def predict_all(X):
     return {
         "failure_in_30_days": predict_failure_30d(X),
         "failure_type": predict_failure_type(X),
-        "risk_score": predict_risk_score(X),
+        "risk_score": risk,
         "recommended_action": predict_action(X),
-        "priority": predict_priority(X),
+        "priority": calculate_priority_from_risk(risk),
     }
 
 
