@@ -193,9 +193,9 @@ TunnelVision enables a **proactive approach**, helping reduce:
 ---
 
 ## 👥 Team
-- Aarushi Upadhyayula: I worked on the back-end of this project, specifically on the predictive models. I had never done any coding besides competitive, much less AIML. There were several roadblocks, but I learned so much about datasets, models, and metrics along the way, improving my Python skills as well.
-- Julia Sun: I coded the front-end for this project. It was my first time doing anything with html, CSS, and JavaScript, so I had to learn the languages while coding. This was a little challenging, but it felt really rewarding after the website started to come together.
-- Kavya Thyagarajan: I primarily worked on the API, with some front-end contributions. Building the API with FastAPI deepened my understanding of Python—especially classes. On the front-end, I learned JavaScript from scratch, which was a steep learning curve, but ultimately a rewarding one.
+- **Aarushi Upadhyayula**: I worked on the back-end of this project, specifically on the predictive models. I had never done any coding besides competitive, much less AIML. There were several roadblocks, but I learned so much about datasets, models, and metrics along the way, improving my Python skills as well.
+- **Julia Sun**: I coded the front-end for this project. It was my first time doing anything with html, CSS, and JavaScript, so I had to learn the languages while coding. This was a little challenging, but it felt really rewarding after the website started to come together.
+- **Kavya Thyagarajan**: I primarily worked on the API, with some front-end contributions. Building the API with FastAPI deepened my understanding of Python—especially classes. On the front-end, I learned JavaScript from scratch, which was a steep learning curve, but ultimately a rewarding one.
 
 ---
 
